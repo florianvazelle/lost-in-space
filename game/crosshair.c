@@ -1,5 +1,4 @@
 #include <GL4D/gl4dp.h>
-#include <GL4D/gl4duw_SDL2.h>
 
 static GLuint _plane = 0;
 static GLuint _crosshairTexId = 0;
@@ -50,4 +49,9 @@ void draw_crosshair(float x, float y){
         part_crosshair(120.0, -0.1 + x, -0.05 + y);
         part_crosshair(-60.0, 0.1 + x, 0.05 + y);
         part_crosshair(-120.0, 0.1 + x, -0.05 + y);
+}
+
+void quit_crosshair(){
+        if(_crosshairTexId)
+                glDeleteTextures(1, &_crosshairTexId);
 }

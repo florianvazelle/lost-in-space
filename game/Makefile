@@ -17,12 +17,14 @@ CFLAGS = -Wall -O3
 CPPFLAGS = -I.
 LDFLAGS = -lm -lassimp -lSDL2_image
 
+LIBS = ../libs
+
 # définition des fichiers et dossiers
 PROGNAME = exe
 VERSION = 1.0
 distdir = $(PROGNAME)-$(VERSION)
-HEADERS = assimp.h crosshair.h
-SOURCES = assimp.c crosshair.c window.c
+HEADERS = $(LIBS)/assimp/assimp.h crosshair.h planet.h space.h asteroid.h
+SOURCES = $(LIBS)/assimp/assimp.c crosshair.c space.c window.c
 OBJ = $(SOURCES:.c=.o)
 DOXYFILE = documentation/Doxyfile
 EXTRAFILES = COPYING $(wildcard shaders/*.?s images/*.png)
@@ -77,4 +79,4 @@ doc: $(DOXYFILE)
 	cd documentation && doxygen && cd ..
 
 clean:
-	@$(RM) -r $(PROGNAME) $(OBJ) *~ $(distdir).tgz gmon.out core.* documentation/*~ shaders/*~ GL4D/*~ documentation/html
+	@$(RM) -r $(PROGNAME) $(OBJ) *~ $(distdir).tgz gmon.out core.* documentation/*~ shaders/*~ GL4D/*~ documentation/html assimp_log.txt

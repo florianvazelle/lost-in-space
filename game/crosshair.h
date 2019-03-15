@@ -8,6 +8,7 @@ extern "C" {
 
 extern void init_crosshair(void);
 extern void draw_crosshair(float x, float y);
+extern void quit_crosshair(void);
 
 #ifdef __cplusplus
 }
