@@ -22,8 +22,6 @@ typedef struct  {
 
 static cam_t _cam = {0, 0, 1.0, 0};
 
-static GLfloat rot = 0.0f;
-
 extern void assimpInit(const char * filename);
 extern void assimpDrawScene(void);
 extern void assimpQuit(void);
@@ -113,6 +111,8 @@ static void idle(void) {
                 _cam.x += dt * step * sin(_cam.theta);
                 _cam.z += dt * step * cos(_cam.theta);
         }
+
+        update_space(_cam.x, _cam.y, _cam.z);
         //printf("x: %.02f - y: %.02f - z: %.02f\n", _cam.x, _cam.y, _cam.z);
 }
 
@@ -182,9 +182,7 @@ static void draw() {
                      _cam.x - sin(_cam.theta), _cam.y,  _cam.z - cos(_cam.theta),
                      0.0, 1.0, 0.0);
 
-        glUseProgram(_pBasicId);
-        draw_crosshair(0, 0);
-
+        glUniform1f(glGetUniformLocation(_pBasicId, "texRepeat"), 1.0);
         draw_space();
 
         glUseProgram(_pModelId);
@@ -200,6 +198,9 @@ static void draw() {
         //gl4duRotatef(-(yClip * 180.0 / M_PI), 1, 0, 0);
 
         assimpDrawScene();
+
+        glUseProgram(_pBasicId);
+        draw_crosshair(0, 0);
 }
 
 static void quit(void) {

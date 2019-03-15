@@ -23,8 +23,8 @@ LIBS = ../libs
 PROGNAME = exe
 VERSION = 1.0
 distdir = $(PROGNAME)-$(VERSION)
-HEADERS = $(LIBS)/assimp/assimp.h crosshair.h planet.h space.h asteroid.h
-SOURCES = $(LIBS)/assimp/assimp.c crosshair.c space.c window.c
+HEADERS = $(LIBS)/assimp/assimp.h $(LIBS)/sort/tri_fusion.h crosshair.h planet.h space.h asteroid.h
+SOURCES = $(LIBS)/assimp/assimp.c space.c window.c
 OBJ = $(SOURCES:.c=.o)
 DOXYFILE = documentation/Doxyfile
 EXTRAFILES = COPYING $(wildcard shaders/*.?s images/*.png)
