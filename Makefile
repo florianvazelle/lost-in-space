@@ -17,14 +17,12 @@ CFLAGS = -Wall -O3
 CPPFLAGS = -I.
 LDFLAGS = -lm -lassimp -lSDL2_image
 
-LIBS = ../libs
-
 # définition des fichiers et dossiers
 PROGNAME = exe
 VERSION = 1.0
 distdir = $(PROGNAME)-$(VERSION)
-HEADERS = $(LIBS)/assimp/assimp.h $(LIBS)/sort/tri_fusion.h crosshair.h planet.h space.h asteroid.h
-SOURCES = $(LIBS)/assimp/assimp.c space.c window.c
+HEADERS = libs/assimp/assimp.h libs/sort/tri_fusion.h game/crosshair.h game/planet.h game/space.h game/asteroid.h
+SOURCES = libs/assimp/assimp.c game/space.c game/window.c
 OBJ = $(SOURCES:.c=.o)
 DOXYFILE = documentation/Doxyfile
 EXTRAFILES = COPYING $(wildcard shaders/*.?s images/*.png)

@@ -4,9 +4,9 @@
 #define LENGTH 3
 
 satellite s[] = {
-        {0, 0, 0, 100, "planet", "../assets/textures/terre.png"},
-        {200, 0, 0, 10, "asteroid", "../assets/textures/asteroid.jpg"},
-        {0, 200, 0, 10, "asteroid", "../assets/textures/asteroid.jpg"}
+        {0, 0, 0, 100, "planet", "assets/textures/terre.png"},
+        {200, 0, 0, 10, "asteroid", "assets/textures/asteroid.jpg"},
+        {0, 200, 0, 10, "asteroid", "assets/textures/asteroid.jpg"}
 };
 
 static GLuint _spaceTexId = 0;
@@ -24,7 +24,7 @@ void init_space(){
         glBindTexture(GL_TEXTURE_2D, _spaceTexId);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        if ((t = IMG_Load("../assets/textures/galaxy0.bmp")) != NULL) {
+        if ((t = IMG_Load("assets/textures/galaxy0.bmp")) != NULL) {
       #ifdef __APPLE__
                 int mode = t->format->BytesPerPixel == 4 ? GL_BGRA : GL_BGR;
       #else

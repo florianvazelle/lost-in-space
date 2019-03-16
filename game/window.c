@@ -63,8 +63,8 @@ static void initGL() {
 
         glEnable(GL_DEPTH_TEST);
 
-        _pBasicId = gl4duCreateProgram("<vs>shaders/basic.vs", "<fs>shaders/basic.fs", NULL);
-        _pModelId = gl4duCreateProgram("<vs>shaders/model.vs", "<fs>shaders/model.fs", NULL);
+        _pBasicId = gl4duCreateProgram("<vs>game/shaders/basic.vs", "<fs>game/shaders/basic.fs", NULL);
+        _pModelId = gl4duCreateProgram("<vs>game/shaders/model.vs", "<fs>game/shaders/model.fs", NULL);
 
         gl4duGenMatrix(GL_FLOAT, "viewMatrix");
         gl4duGenMatrix(GL_FLOAT, "modelMatrix");
