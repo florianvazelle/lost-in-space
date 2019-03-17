@@ -20,6 +20,7 @@ void interchange(satellite tab1[], satellite tab2[], int idx1, int idx2) {
   tab1[idx1].width = tab2[idx2].width;
   tab1[idx1].type = tab2[idx2].type;
   tab1[idx1].sprite = tab2[idx2].sprite;
+  tab1[idx1]._texId = tab2[idx2]._texId;
 }
 
 void fusion(satellite tableau[], int deb1, int fin1, int fin2, int x, int y,

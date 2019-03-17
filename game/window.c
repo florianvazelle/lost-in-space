@@ -61,7 +61,9 @@ int main(int argc, char **argv) {
 static void initGL() {
         glClearColor(0.0, 0.0, 0.0, 0.0);
 
+        glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_TEXTURE_2D);
 
         _pBasicId = gl4duCreateProgram("<vs>game/shaders/basic.vs", "<fs>game/shaders/basic.fs", NULL);
         _pModelId = gl4duCreateProgram("<vs>game/shaders/model.vs", "<fs>game/shaders/model.fs", NULL);
@@ -69,9 +71,6 @@ static void initGL() {
         gl4duGenMatrix(GL_FLOAT, "viewMatrix");
         gl4duGenMatrix(GL_FLOAT, "modelMatrix");
         gl4duGenMatrix(GL_FLOAT, "projectionMatrix");
-
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
 
         resize(_wW, _wH);
 }
@@ -95,7 +94,7 @@ static void idle(void) {
         xClip = ((_xm + 0.5f) / _wW) * 2.0f - 1.0f;
         yClip = 1.0f - ((_ym + 0.5f) / _wH) * 2.0f;
 
-        double dt, dtheta = M_PI, step = 30.0;
+        double dt, dtheta = M_PI, step = 50.0;
         static double t0 = 0, t;
         dt = ((t = gl4dGetElapsedTime()) - t0) / 1000.0;
         t0 = t;
@@ -176,14 +175,14 @@ static void draw() {
         /* Debut */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        //glUseProgram(_pBasicId);
         gl4duBindMatrix("viewMatrix");
         gl4duLoadIdentityf();
         gl4duLookAtf(_cam.x, _cam.y, _cam.z,
                      _cam.x - sin(_cam.theta), _cam.y,  _cam.z - cos(_cam.theta),
                      0.0, 1.0, 0.0);
 
-        glUniform1f(glGetUniformLocation(_pBasicId, "texRepeat"), 1.0);
-        draw_space();
+        draw_space(_pBasicId);
 
         glUseProgram(_pModelId);
         gl4duBindMatrix("modelMatrix");
@@ -201,6 +200,10 @@ static void draw() {
 
         glUseProgram(_pBasicId);
         draw_crosshair(0, 0);
+
+        /* enables cull facing and depth testing */
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
 }
 
 static void quit(void) {
