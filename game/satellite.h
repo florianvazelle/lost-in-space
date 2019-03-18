@@ -61,6 +61,7 @@ void draw_satellite(satellite s, GLuint _pBasicId) {
   glBindTexture(GL_TEXTURE_2D, s._texId);
   glUniform1f(glGetUniformLocation(_pBasicId, "texRepeat"), 1.0);
   gl4dgDraw(_sphere);
+  glUseProgram(0);
 }
 
 void quit_satellite(satellite s) {
