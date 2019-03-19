@@ -5,9 +5,9 @@
 #include <SDL_image.h>
 
 typedef struct {
+  int id;
   float x, y, z;
   float width;
-  const char *type;
   const char *sprite;
   GLuint _texId;
 } satellite;

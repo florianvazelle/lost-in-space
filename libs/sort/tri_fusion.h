@@ -14,11 +14,11 @@ double getDistance3D(float x1, float y1, float z1, float x2, float y2,
 }
 
 void interchange(satellite tab1[], satellite tab2[], int idx1, int idx2) {
+  tab1[idx1].id = tab2[idx2].id;
   tab1[idx1].x = tab2[idx2].x;
   tab1[idx1].y = tab2[idx2].y;
   tab1[idx1].z = tab2[idx2].z;
   tab1[idx1].width = tab2[idx2].width;
-  tab1[idx1].type = tab2[idx2].type;
   tab1[idx1].sprite = tab2[idx2].sprite;
   tab1[idx1]._texId = tab2[idx2]._texId;
 }
