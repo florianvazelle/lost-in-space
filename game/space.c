@@ -13,16 +13,7 @@ static GLuint _plane = 0;
 static GLuint _pSkyboxId = 0;
 static GLuint _spaceTexId = 0;
 
-static GLuint vbo_cube_vertices = 0;
-static GLuint ibo_cube_indices = 0;
-static GLushort cube_indices[] = {
-        0, 1, 2, 3,
-        3, 2, 6, 7,
-        7, 6, 5, 4,
-        4, 5, 1, 0,
-        0, 3, 7, 4,
-        1, 2, 6, 5
-};
+GLuint skyboxVAO, skyboxVBO;
 
 void draw_galaxy_skybox();
 
@@ -64,32 +55,60 @@ void init_space(){
         SDL_FreeSurface(yneg);  SDL_FreeSurface(ypos);
         SDL_FreeSurface(zneg);  SDL_FreeSurface(zpos);
 
-        GLint vertex = glGetAttribLocation(_pSkyboxId, "vertex");
+        GLfloat skyboxVertices[] = {
+                // Positions
+                -1.0f,  1.0f, -1.0f,
+                -1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+                1.0f,  1.0f, -1.0f,
+                -1.0f,  1.0f, -1.0f,
 
-        static GLfloat cube_vertices[] = {
-                -1.0,  1.0,  1.0,
-                -1.0, -1.0,  1.0,
-                1.0, -1.0,  1.0,
-                1.0,  1.0,  1.0,
-                -1.0,  1.0, -1.0,
-                -1.0, -1.0, -1.0,
-                1.0, -1.0, -1.0,
-                1.0,  1.0, -1.0
+                -1.0f, -1.0f,  1.0f,
+                -1.0f, -1.0f, -1.0f,
+                -1.0f,  1.0f, -1.0f,
+                -1.0f,  1.0f, -1.0f,
+                -1.0f,  1.0f,  1.0f,
+                -1.0f, -1.0f,  1.0f,
+
+                1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+
+                -1.0f, -1.0f,  1.0f,
+                -1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f, -1.0f,  1.0f,
+                -1.0f, -1.0f,  1.0f,
+
+                -1.0f,  1.0f, -1.0f,
+                1.0f,  1.0f, -1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                -1.0f,  1.0f,  1.0f,
+                -1.0f,  1.0f, -1.0f,
+
+                -1.0f, -1.0f, -1.0f,
+                -1.0f, -1.0f,  1.0f,
+                1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+                -1.0f, -1.0f,  1.0f,
+                1.0f, -1.0f,  1.0f
         };
 
-        glGenBuffers(1, &vbo_cube_vertices);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo_cube_vertices);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(cube_vertices), cube_vertices, GL_STATIC_DRAW);
-
-        glEnableVertexAttribArray(vertex);
-        glVertexAttribPointer(vertex, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-        glGenBuffers(1, &ibo_cube_indices);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_cube_indices);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cube_indices), cube_indices, GL_STATIC_DRAW);
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        // Setup skybox VAO
+        glGenVertexArrays( 1, &skyboxVAO );
+        glGenBuffers( 1, &skyboxVBO );
+        glBindVertexArray( skyboxVAO );
+        glBindBuffer( GL_ARRAY_BUFFER, skyboxVBO );
+        glBufferData( GL_ARRAY_BUFFER, sizeof( skyboxVertices ), &skyboxVertices, GL_STATIC_DRAW );
+        glEnableVertexAttribArray( 0 );
+        glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof( GLfloat ), ( GLvoid * ) 0 );
+        glBindVertexArray(0);
 }
 
 void update_space(int x, int y, int z){
@@ -97,7 +116,7 @@ void update_space(int x, int y, int z){
 }
 
 void draw_space(GLuint _pBasicId){
-        draw_galaxy_skybox();
+        draw_skybox();
         for (int i = LENGTH - 1; i >= 0; i--) {
                 draw_satellite(s[i], _pBasicId);
         }
@@ -108,30 +127,21 @@ void quit_space(){
                 quit_satellite(s[i]);
         }
         glDeleteTextures(1, &_spaceTexId);
-        if(vbo_cube_vertices)
-                glDeleteBuffers(1, &vbo_cube_vertices);
-        if(ibo_cube_indices)
-                glDeleteBuffers(1, &ibo_cube_indices);
 }
 
-void draw_galaxy_skybox() {
-        glEnable(GL_TEXTURE_CUBE_MAP);
+void draw_skybox(){
+        // Draw skybox as last
+        glDepthFunc( GL_LEQUAL ); // Change depth function so depth test passes when values are equal to depth buffer's content
         glUseProgram(_pSkyboxId);
+        glActiveTexture( GL_TEXTURE0 );
 
-        gl4duBindMatrix("modelMatrix");
-        gl4duLoadIdentityf();
-
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, _spaceTexId);
-        glUniform1i(glGetUniformLocation(_pSkyboxId, "tex"), 0);
-
-        glBindBuffer(GL_ARRAY_BUFFER, vbo_cube_vertices);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_cube_indices);
-
+        // skybox cube
+        glBindVertexArray( skyboxVAO );
+        glBindTexture( GL_TEXTURE_CUBE_MAP, _spaceTexId );
         gl4duSendMatrices();
-        glDrawElements(GL_QUADS, sizeof(cube_indices)/sizeof(GLushort), GL_UNSIGNED_SHORT, 0);
+        glDrawArrays( GL_TRIANGLES, 0, 36 );
+        glBindVertexArray( 0 );
+        glDepthFunc( GL_LESS ); // Set depth function back to default
 
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glUseProgram(0);
 }
