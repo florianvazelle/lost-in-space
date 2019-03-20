@@ -21,8 +21,11 @@ LDFLAGS = -lm -lassimp -lSDL2_image
 PROGNAME = exe
 VERSION = 1.0
 distdir = $(PROGNAME)-$(VERSION)
-HEADERS = libs/assimp/assimp.h libs/sort/tri_fusion.h game/crosshair.h game/planet.h game/space.h game/asteroid.h
-SOURCES = libs/assimp/assimp.c game/space.c game/window.c
+HEADERS =
+UTILS = game/utils/load_texture.c game/utils/merge.c
+GAME = game/satellite.c game/cockpit.c game/skybox.c game/crosshair.c game/space.c game/window.c
+LIBS = libs/assimp/assimp.c
+SOURCES = $(LIBS) $(UTILS) $(GAME)
 OBJ = $(SOURCES:.c=.o)
 DOXYFILE = documentation/Doxyfile
 EXTRAFILES = COPYING $(wildcard shaders/*.?s images/*.png)

@@ -41,14 +41,10 @@ static void draw(void);
 static void quit(void);
 
 int main(int argc, char **argv) {
-        if(argc != 2) {
-                fprintf(stderr, "usage: %s <3d_file>\n", argv[0]);
-                return 1;
-        }
         if (!gl4duwCreateWindow(argc, argv, "GL4Dummies", 10, 10, _wW, _wH,
                                 GL4DW_RESIZABLE | GL4DW_SHOWN))
                 return 1;
-        assimpInit(argv[1]);
+        assimpInit("assets/models/spaceship.obj");
         initGL();
         initData();
         atexit(quit);
@@ -107,25 +103,24 @@ static void idle(void) {
         static double t0 = 0, t;
         dt = ((t = gl4dGetElapsedTime()) - t0) / 1000.0;
         t0 = t;
-        //if(_keys[KLEFT])
+
         if(angleX > _wW/2)
                 _cam.theta += dt * dtheta * tan(angleX);
-        //if(_keys[KRIGHT])
         if(angleX < _wW/2)
                 _cam.theta -= dt * dtheta * tan(angleX);
         if(_keys[KUP]) {
                 _cam.x += -dt * step * sin(_cam.theta);
-                _cam.y += -dt * step * tan(angleY);
+                _cam.y += -dt * step * tan(angleY * 2);
                 _cam.z += -dt * step * cos(_cam.theta);
         }
         if(_keys[KDOWN]) {
                 _cam.x += dt * step * sin(_cam.theta);
-                _cam.y += -dt * step * tan(angleY);
+                _cam.y += dt * step * tan(angleY * 2);
                 _cam.z += dt * step * cos(_cam.theta);
         }
 
         update_space(_cam.x, _cam.y, _cam.z, t);
-        printf("x: %.02f - y: %.02f - z: %.02f\n", _cam.x, _cam.y, _cam.z);
+        //printf("x: %.02f - y: %.02f - z: %.02f\n", _cam.x, _cam.y, _cam.z);
 }
 
 static void keydown(int keycode) {
@@ -207,11 +202,11 @@ static void draw() {
                              0.0, 1.0, 0.0);
         else if(view == 1)
                 gl4duLookAtf(_cam.x, _cam.y + 0.18, _cam.z,
-                             _cam.x - sin(_cam.theta), _cam.y - angleY,  _cam.z - cos(_cam.theta),
+                             _cam.x - sin(_cam.theta), _cam.y - tan(angleY * 3),  _cam.z - cos(_cam.theta),
                              0.0, 1.0, 0.0);
         else if(view == 2)
                 gl4duLookAtf(_cam.x, _cam.y, _cam.z,
-                             _cam.x - sin(_cam.theta), _cam.y - angleY,  _cam.z - cos(_cam.theta),
+                             _cam.x - sin(_cam.theta), _cam.y - angleY * 2,  _cam.z - cos(_cam.theta),
                              0.0, 1.0, 0.0);
 
         draw_skybox(_cam.x, _cam.y, _cam.z);
@@ -228,13 +223,13 @@ static void draw() {
                 gl4duRotatef(-10, 1, 0, 0);
                 gl4duScalef(2.0 / 5.0, 2.0 / 5.0, 2.0 / 5.0);
 
-                //gl4duRotatef(-(xClip * 180.0 / M_PI), 0, 1, 0);
-                //gl4duRotatef(-(yClip * 180.0 / M_PI), 1, 0, 0);
+                gl4duRotatef(-(xClip * 180.0 / M_PI), 0, 1, 0);
+                gl4duRotatef(-(yClip * 180.0 / M_PI), 1, 0, 0);
 
                 assimpDrawScene();
 
                 glUseProgram(_pBasicId);
-                draw_crosshair(0, 0);
+                draw_crosshair(xClip, yClip);
 
                 glUseProgram(0);
         } else if(view == 1 || view == 2) {

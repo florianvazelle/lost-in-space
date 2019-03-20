@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 #include "satellite.h"
-#include "../libs/sort/tri_fusion.h"
+#include "utils/merge.h"
 
 static satellite s[4] = {
         {1, 250, 160, 30, 100, "assets/textures/star.jpg", 0},
@@ -11,7 +11,7 @@ static satellite s[4] = {
         {3, 91, 40, 230, 5, "assets/textures/asteroid.jpg", 0}
 };
 static int size = 4;
-static int inertia = 0;
+static float inertia = 0.0f;
 
 int myrandom(int min, int max){
         srand(time(NULL));
@@ -68,7 +68,8 @@ void ellipse(double dt){
                         s[i].x = 250 + 178 * cos(2 * M_PI / 360 * inertia);
                         s[i].y = 160 + 178 * sin(2 * M_PI / 360 * inertia);
                         s[i].z = 30  + 178 * sin(2 * M_PI / 360 * inertia);
-                        if(++inertia >= 360) inertia = 0;
+                        inertia += 0.2f;
+                        if(inertia >= 360.0f) inertia = 0.0f;
                 }
         }
 }
