@@ -3,7 +3,7 @@
 uniform sampler2D tex;
 uniform vec4 lumPos;
 uniform int phong;
-uniform int sun;
+uniform int type;
 
 in vec3 gsoNormal;
 in vec3 gsoModPos;
@@ -29,7 +29,7 @@ void main(void) {
     Idiffuse = clamp(dot(N, -L), 0, 1);
 
     color = texture(tex, gsoTexCoord);
-    if (sun != 0) {
+    if (type != 1) {
       fragColor = lum_diffus * color * Idiffuse + lum_amb * Iamb * color +
                   lum_spec * Ispec;
     } else {

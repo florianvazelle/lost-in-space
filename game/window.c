@@ -233,7 +233,7 @@ static void draw() {
                 gl4duRotatef(-(xClip * 180.0 / M_PI), 0, 1, 0);
                 gl4duRotatef(-(yClip * 180.0 / M_PI), 1, 0, 0);
 
-                apply_stars(_pModelId);
+                //apply_stars(_pModelId);
                 assimpDrawScene();
 
                 glUseProgram(_pBasicId);

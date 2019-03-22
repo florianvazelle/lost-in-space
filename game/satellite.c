@@ -13,8 +13,8 @@ GLuint init_satellite(satellite s) {
 }
 
 
+static GLfloat _lumPos[4] = {250, 160, 30, 1.0};
 void draw_satellite(satellite s, GLuint _pBasicId, GLuint _phong, GLfloat _eyePos[3]) {
-        GLfloat _lumPos[4] = {250, 160, 30, 1.0};
 
         glUseProgram(_pBasicId);
 
@@ -22,7 +22,7 @@ void draw_satellite(satellite s, GLuint _pBasicId, GLuint _phong, GLfloat _eyePo
         gl4duLoadIdentityf();
 
         glActiveTexture(GL_TEXTURE0);
-        glUniform1i(glGetUniformLocation(_pBasicId, "myTexture"), 0);
+        glUniform1i(glGetUniformLocation(_pBasicId, "tex"), 0);
 
         glUniform1i(glGetUniformLocation(_pBasicId, "phong"), _phong);
         glUniform1i(glGetUniformLocation(_pBasicId, "type"), s.id);
