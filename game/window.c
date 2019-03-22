@@ -26,6 +26,8 @@ typedef struct  {
 
 static cam_t _cam = {0, 0, 1.0, 0};
 
+static GLuint _phong = 1;
+
 extern void assimpInit(const char * filename);
 extern void assimpDrawScene(void);
 extern void assimpQuit(void);
@@ -65,7 +67,7 @@ static void initGL() {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_TEXTURE_2D);
 
-        _pBasicId = gl4duCreateProgram("<vs>game/shaders/basic.vs", "<fs>game/shaders/basic.fs", NULL);
+        _pBasicId = gl4duCreateProgram("<vs>game/shaders/basic.vs", "<gs>game/shaders/basic.gs","<fs>game/shaders/basic.fs", NULL);
         _pModelId = gl4duCreateProgram("<vs>game/shaders/model.vs", "<fs>game/shaders/model.fs", NULL);
 
         gl4duGenMatrix(GL_FLOAT, "viewMatrix");
@@ -99,7 +101,7 @@ static void idle(void) {
         GLfloat angleX = (_xm - (_wW >> 1)) / (GLfloat)_wW;
         angleY = (_ym - (_wH >> 1)) / (GLfloat)_wH;
 
-        double dt, dtheta = M_PI, step = 50.0;
+        double dt, dtheta = M_PI, step = 150.0;
         static double t0 = 0, t;
         dt = ((t = gl4dGetElapsedTime()) - t0) / 1000.0;
         t0 = t;
@@ -151,6 +153,10 @@ static void keydown(int keycode) {
                         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
                         glLineWidth(1.0);
                 }
+                break;
+
+        case 'p':
+                _phong = !_phong;
                 break;
         /* Points de vue */
         case '0':
@@ -210,7 +216,8 @@ static void draw() {
                              0.0, 1.0, 0.0);
 
         draw_skybox(_cam.x, _cam.y, _cam.z);
-        draw_space(_pBasicId);
+        GLfloat _eyePos[3] = { _cam.x, _cam.y, _cam.z };
+        draw_space(_pBasicId, _phong, _eyePos);
 
         if(view == 0) {
                 glUseProgram(_pModelId);
@@ -226,6 +233,7 @@ static void draw() {
                 gl4duRotatef(-(xClip * 180.0 / M_PI), 0, 1, 0);
                 gl4duRotatef(-(yClip * 180.0 / M_PI), 1, 0, 0);
 
+                apply_stars(_pModelId);
                 assimpDrawScene();
 
                 glUseProgram(_pBasicId);
@@ -234,6 +242,7 @@ static void draw() {
                 glUseProgram(0);
         } else if(view == 1 || view == 2) {
                 glUseProgram(_pBasicId);
+                glUniform1i(glGetUniformLocation(_pBasicId, "phong"), 0);
                 draw_cockpit(0, 0);
                 glUseProgram(0);
         }

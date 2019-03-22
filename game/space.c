@@ -79,9 +79,19 @@ void update_space(int x, int y, int z, double dt){
         ellipse(dt);
 }
 
-void draw_space(GLuint _pBasicId){
+void draw_space(GLuint _pBasicId, GLuint _phong, GLfloat _eyePos[3]){
         for (int i = size - 1; i >= 0; i--) {
-                draw_satellite(s[i], _pBasicId);
+                draw_satellite(s[i], _pBasicId, _phong, _eyePos);
+        }
+}
+
+void apply_stars(GLuint _pBasicId){
+        for (int i = size - 1; i >= 0; i--) {
+                if(s[i].id == 1) {
+                        GLfloat _lumPos[4] = {s[i].x, s[i].y, s[i].z, 1.0};
+                        glUniform4fv(glGetUniformLocation(_pBasicId, "lumPos"), 1, _lumPos);
+                        return;
+                }
         }
 }
 

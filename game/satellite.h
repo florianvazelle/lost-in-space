@@ -11,8 +11,8 @@ typedef struct {
   GLuint _texId;
 } satellite;
 
-GLuint init_satellite(satellite s);
-void draw_satellite(satellite s, GLuint _pBasicId);
-void quit_satellite(satellite s);
+GLuint init_satellite(satellite);
+void draw_satellite(satellite, GLuint, GLuint, GLfloat[3]);
+void quit_satellite(satellite);
 
 #endif

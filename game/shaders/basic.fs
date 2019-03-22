@@ -1,24 +1,41 @@
 #version 330
-uniform sampler2D tex;
-uniform int border;
-uniform int alpha;
-float cutoff = 0;
 
-in  vec2 vsoTexCoord;
+uniform sampler2D tex;
+uniform vec4 lumPos;
+uniform int phong;
+uniform int sun;
+
+in vec3 gsoNormal;
+in vec3 gsoModPos;
+in float gsoIdiffus;
+in vec2 gsoTexCoord;
+
 out vec4 fragColor;
 
 void main(void) {
-  if( border != 0 && (vsoTexCoord.s < 0.02 ||
-		      vsoTexCoord.t < 0.02 ||
-		      (1 - vsoTexCoord.s) < 0.02 ||
-		      (1 - vsoTexCoord.t) < 0.02 ) )
-    fragColor = vec4(0.5, 0, 0, 1);
-  else
-    fragColor = texture(tex, vsoTexCoord);
+  if (phong != 0) {
+    const vec4 lum_diffus = vec4(1, 1, 0.9, 1);
+    const vec4 lum_amb = vec4(0.8, 0.8, 1, 1);
+    const vec4 lum_spec = vec4(1, 1, 0.75, 1);
+    const float Iamb = 0.15;
 
-    if (gl_FragColor.a < cutoff)
-        // alpha value less than user-specified threshold?
-    {
-        discard; // yes: discard this fragment
+    vec3 L = normalize(gsoModPos - lumPos.xyz);
+    float Idiffuse = 0, Ispec = 0;
+    vec4 color = vec4(1);
+    vec3 N = normalize(gsoNormal);
+
+    vec3 B = cross(normalize(vec3(N.x, 0, N.z)), vec3(0, 1, 0));
+    vec3 T = cross(N, B);
+    Idiffuse = clamp(dot(N, -L), 0, 1);
+
+    color = texture(tex, gsoTexCoord);
+    if (sun != 0) {
+      fragColor = lum_diffus * color * Idiffuse + lum_amb * Iamb * color +
+                  lum_spec * Ispec;
+    } else {
+      fragColor = color + lum_amb * Iamb * color + lum_spec * Ispec;
     }
+  } else {
+    fragColor = texture(tex, gsoTexCoord);
+  }
 }

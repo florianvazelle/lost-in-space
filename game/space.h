@@ -3,7 +3,8 @@
 
 void init_space(void);
 void update_space(int, int, int, double);
-void draw_space(GLuint);
+void draw_space(GLuint, GLuint, GLfloat[3]);
+void apply_stars(int);
 void quit_space(void);
 
 #endif
