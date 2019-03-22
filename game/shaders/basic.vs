@@ -9,7 +9,6 @@ layout(location = 1) in vec3 vsiNormal;
 layout(location = 2) in vec2 vsiTexCoord;
 
 out vec3 vsoNormal;
-out vec3 vsoPosition;
 out vec3 vsoModPos;
 out vec2 vsoTexCoord;
 
@@ -17,7 +16,6 @@ void main(void) {
   vsoTexCoord = vsiTexCoord;
   vec4 mp = modelMatrix * vec4(vsiPosition, 1.0);
   vsoNormal = (transpose(inverse(modelMatrix)) * vec4(vsiNormal, 0.0)).xyz;
-  vsoPosition = vsiPosition;
   vsoModPos = mp.xyz;
   gl_Position = projectionMatrix * viewMatrix * mp;
 }

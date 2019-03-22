@@ -4,7 +4,6 @@ uniform vec4 lumPos;
 /* les sortie du vertex shader deviennent des entrées en mode array
    car nous recevons un triangle en entrée */
 in vec3 vsoNormal[];
-in vec3 vsoPosition[];
 in vec3 vsoModPos[];
 in vec2 vsoTexCoord[];
 /* les sorties du geometry vers le fragment */

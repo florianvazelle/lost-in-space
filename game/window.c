@@ -216,8 +216,7 @@ static void draw() {
                              0.0, 1.0, 0.0);
 
         draw_skybox(_cam.x, _cam.y, _cam.z);
-        GLfloat _eyePos[3] = { _cam.x, _cam.y, _cam.z };
-        draw_space(_pBasicId, _phong, _eyePos);
+        draw_space(_pBasicId, _phong);
 
         if(view == 0) {
                 glUseProgram(_pModelId);
@@ -233,10 +232,11 @@ static void draw() {
                 gl4duRotatef(-(xClip * 180.0 / M_PI), 0, 1, 0);
                 gl4duRotatef(-(yClip * 180.0 / M_PI), 1, 0, 0);
 
-                //apply_stars(_pModelId);
+                apply_stars(_pModelId);
                 assimpDrawScene();
 
                 glUseProgram(_pBasicId);
+                glUniform1i(glGetUniformLocation(_pBasicId, "phong"), 0);
                 draw_crosshair(xClip, yClip);
 
                 glUseProgram(0);

@@ -14,8 +14,8 @@ out vec4 vsoModPosition;
 
 void main(void) {
   vsoTexCoord = vsiTexCoord;
+  vec4 mp = modelMatrix * vec4(vsiPosition, 1.0);
   vsoNormal = (transpose(inverse(modelMatrix)) * vec4(vsiNormal, 0.0)).xyz;
-  vsoModPosition = modelMatrix * vec4(vsiPosition, 1.0);
-  gl_Position =
-      projectionMatrix * viewMatrix * modelMatrix * vec4(vsiPosition, 1.0);
+  vsoModPosition = mp;
+  gl_Position = projectionMatrix * viewMatrix * mp;
 }

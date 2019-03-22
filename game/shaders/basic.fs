@@ -1,6 +1,6 @@
 #version 330
 
-uniform sampler2D tex;
+uniform sampler2D myTexture;
 uniform vec4 lumPos;
 uniform int phong;
 uniform int type;
@@ -28,7 +28,7 @@ void main(void) {
     vec3 T = cross(N, B);
     Idiffuse = clamp(dot(N, -L), 0, 1);
 
-    color = texture(tex, gsoTexCoord);
+    color = texture(myTexture, gsoTexCoord);
     if (type != 1) {
       fragColor = lum_diffus * color * Idiffuse + lum_amb * Iamb * color +
                   lum_spec * Ispec;
@@ -36,6 +36,6 @@ void main(void) {
       fragColor = color + lum_amb * Iamb * color + lum_spec * Ispec;
     }
   } else {
-    fragColor = texture(tex, gsoTexCoord);
+    fragColor = texture(myTexture, gsoTexCoord);
   }
 }

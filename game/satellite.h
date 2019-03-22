@@ -12,7 +12,7 @@ typedef struct {
 } satellite;
 
 GLuint init_satellite(satellite);
-void draw_satellite(satellite, GLuint, GLuint, GLfloat[3]);
+void draw_satellite(satellite, GLuint, GLuint);
 void quit_satellite(satellite);
 
 #endif

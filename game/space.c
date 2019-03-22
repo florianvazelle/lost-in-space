@@ -79,9 +79,9 @@ void update_space(int x, int y, int z, double dt){
         ellipse(dt);
 }
 
-void draw_space(GLuint _pBasicId, GLuint _phong, GLfloat _eyePos[3]){
+void draw_space(GLuint _pBasicId, GLuint _phong){
         for (int i = size - 1; i >= 0; i--) {
-                draw_satellite(s[i], _pBasicId, _phong, _eyePos);
+                draw_satellite(s[i], _pBasicId, _phong);
         }
 }
 
