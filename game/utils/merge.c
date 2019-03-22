@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../satellite.h"
+#include "structs/planet.h"
 
 double getDistance3D(float x1, float y1, float z1, float x2, float y2, float z2) {
         double x = (x2 - x1) * (x2 - x1);
@@ -31,8 +31,8 @@ void fusion(satellite tableau[], int deb1, int fin1, int fin2, int x, int y, int
                         tableau[i] = table1[compt1 - deb1];
                         compt1++;
                 } else {
-                        double v1 = getDistance3D(table1[compt1 - deb1].data.x, table1[compt1 - deb1].data.y, table1[compt1 - deb1].data.z, x, y, z);
-                        double v2 = getDistance3D(tableau[compt2].data.x, tableau[compt2].data.y, tableau[compt2].data.z, x, y, z);
+                        double v1 = getDistance3D(table1[compt1 - deb1].body.data.x, table1[compt1 - deb1].body.data.y, table1[compt1 - deb1].body.data.z, x, y, z);
+                        double v2 = getDistance3D(tableau[compt2].body.data.x, tableau[compt2].body.data.y, tableau[compt2].body.data.z, x, y, z);
                         if (v1 < v2) {
                                 tableau[i] = table1[compt1 - deb1];
                                 compt1++;

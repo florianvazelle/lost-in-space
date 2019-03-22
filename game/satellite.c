@@ -16,21 +16,21 @@ GLuint init_satellite(satellite s) {
 }
 
 vector3 ellipse(satellite s){
-        s.dir.x = 250 + 178 * cos(2 * M_PI / 360 * inertia) - s.data.x;
-        s.dir.y = 160 + 178 * sin(2 * M_PI / 360 * inertia) - s.data.y;
-        s.dir.z = 30  + 178 * sin(2 * M_PI / 360 * inertia) - s.data.z;
+        s.body.dir.x = 250 + 178 * cos(2 * M_PI / 360 * inertia) - s.body.data.x;
+        s.body.dir.y = 160 + 178 * sin(2 * M_PI / 360 * inertia) - s.body.data.y;
+        s.body.dir.z = 30  + 178 * sin(2 * M_PI / 360 * inertia) - s.body.data.z;
         inertia += 0.2f;
         if(inertia >= 360.0f) inertia = 0.0f;
-        return s.dir;
+        return s.body.dir;
 }
 
 vector3 update_satellite(satellite s) {
         if(s.id == 2) {
-                s.dir = ellipse(s);
+                s.body.dir = ellipse(s);
         } else {
-                s.dir = zero();
+                s.body.dir = zero();
         }
-        return s.dir;
+        return s.body.dir;
 }
 
 void draw_satellite(satellite s, GLuint _pBasicId, GLuint _phong) {
@@ -47,9 +47,9 @@ void draw_satellite(satellite s, GLuint _pBasicId, GLuint _phong) {
         glUniform4fv(glGetUniformLocation(_pBasicId, "lumPos"), 1, _lumPos);
 
         gl4duPushMatrix(); {
-                gl4duTranslatef(s.data.x, s.data.y, s.data.z);
+                gl4duTranslatef(s.body.data.x, s.body.data.y, s.body.data.z);
                 glRotatef(180, 0, 1, 0);
-                gl4duScalef(s.data.rayon, s.data.rayon, s.data.rayon);
+                gl4duScalef(s.body.data.rayon, s.body.data.rayon, s.body.data.rayon);
                 gl4duSendMatrices();
         } gl4duPopMatrix();
 
@@ -67,7 +67,7 @@ void quit_satellite(satellite s) {
 }
 
 int hit_satellite(satellite s1, satellite s2){
-        sphere s1_fut = apply_dir(s1.data, s1.dir);
-        sphere s2_fut = apply_dir(s2.data, s2.dir);
+        sphere s1_fut = apply_dir(s1.body.data, s1.body.dir);
+        sphere s2_fut = apply_dir(s2.body.data, s2.body.dir);
         return hit_sphere_sphere(s1_fut, s2_fut);
 }

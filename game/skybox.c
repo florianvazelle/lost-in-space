@@ -8,8 +8,8 @@ static GLuint _spaceTexId = 0;
 static GLuint skyboxVAO = 0;
 
 void init_skybox() {
-        _pSkyboxId = gl4duCreateProgram("<vs>game/shaders/skybox.vs",
-                                        "<fs>game/shaders/skybox.fs", NULL);
+        _pSkyboxId = gl4duCreateProgram("<vs>assets/shaders/skybox.vs",
+                                        "<fs>assets/shaders/skybox.fs", NULL);
 
         const char *skybox_path_sprite[6] = {
                 "assets/textures/skybox/rigth.png", "assets/textures/skybox/left.png",

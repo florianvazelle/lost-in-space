@@ -1,16 +1,7 @@
 #ifndef _SATELLITE_H
 #define _SATELLITE_H
 
-#include "utils/sphere.h"
-#include <GL4D/gl4dp.h>
-
-typedef struct {
-  int id;
-  sphere data;
-  vector3 dir;
-  const char *path_sprite;
-  GLuint _texId;
-} satellite;
+#include "utils/structs/planet.h"
 
 GLuint init_satellite(satellite);
 vector3 update_satellite(satellite);

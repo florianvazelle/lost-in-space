@@ -67,8 +67,8 @@ static void initGL() {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_TEXTURE_2D);
 
-        _pBasicId = gl4duCreateProgram("<vs>game/shaders/basic.vs", "<gs>game/shaders/basic.gs","<fs>game/shaders/basic.fs", NULL);
-        _pModelId = gl4duCreateProgram("<vs>game/shaders/model.vs", "<fs>game/shaders/model.fs", NULL);
+        _pBasicId = gl4duCreateProgram("<vs>assets/shaders/basic.vs", "<gs>assets/shaders/basic.gs","<fs>assets/shaders/basic.fs", NULL);
+        _pModelId = gl4duCreateProgram("<vs>assets/shaders/model.vs", "<fs>assets/shaders/model.fs", NULL);
 
         gl4duGenMatrix(GL_FLOAT, "viewMatrix");
         gl4duGenMatrix(GL_FLOAT, "modelMatrix");
