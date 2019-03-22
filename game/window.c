@@ -121,7 +121,7 @@ static void idle(void) {
                 _cam.z += dt * step * cos(_cam.theta);
         }
 
-        update_space(_cam.x, _cam.y, _cam.z, t);
+        update_space(_cam.x, _cam.y, _cam.z);
         //printf("x: %.02f - y: %.02f - z: %.02f\n", _cam.x, _cam.y, _cam.z);
 }
 
