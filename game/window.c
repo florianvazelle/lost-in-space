@@ -1,13 +1,24 @@
 #include <GL4D/gl4duw_SDL2.h>
 #include <SDL_image.h>
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+#include <nanomsg/nn.h>
+#include <nanomsg/bus.h>
+
 #include "crosshair.h"
 #include "space.h"
 #include "skybox.h"
 #include "cockpit.h"
 #include "interact.h"
 
+#include "utils/send_info.h"
 #include "utils/load_texture.h"
+
+#define LENGTH 3
 
 static int _wW = 800, _wH = 600;
 static int _xm = 400, _ym = 300;
@@ -21,6 +32,7 @@ static int view = 0;
 static GLuint _plane = 0;
 static int on_spaceship = 1;
 static GLuint interact = 0;
+static int find = 0;
 
 enum kyes_t { KLEFT = 0, KRIGHT, KUP, KDOWN };
 
@@ -39,6 +51,9 @@ extern void assimpInit(const char * filename);
 extern void assimpDrawScene(void);
 extern void assimpQuit(void);
 
+static int sock;
+static void initNode(int, char **);
+
 static void initGL(void);
 static void initData(void);
 static void resize(int w, int h);
@@ -50,10 +65,15 @@ static void draw(void);
 static void quit(void);
 
 int main(int argc, char **argv) {
+        if (argc < 2) {
+                fprintf(stderr, "Usage: bus <NODE_ID>\n");
+                exit(1);
+        }
         if (!gl4duwCreateWindow(argc, argv, "GL4Dummies", 10, 10, _wW, _wH,
                                 GL4DW_RESIZABLE | GL4DW_SHOWN))
                 return 1;
         assimpInit("assets/models/spaceship.obj");
+        initNode(argc, argv);
         initGL();
         initData();
         atexit(quit);
@@ -65,6 +85,47 @@ int main(int argc, char **argv) {
         gl4duwIdleFunc(idle);
         gl4duwMainLoop();
         return 0;
+}
+
+void fatal(const char *func) {
+        fprintf(stderr, "%s: %s\n", func, nn_strerror(nn_errno()));
+        exit(1);
+}
+
+void node(const int argc, const char argv[3][21]) {
+        if ((sock = nn_socket (AF_SP, NN_BUS)) < 0) {
+                fatal("nn_socket");
+        }
+        if (nn_bind(sock, argv[0]) < 0) {
+                fatal("nn_bind");
+        }
+
+        sleep(1); // wait for peers to bind
+        for (int x = 1; x < LENGTH; x++) {
+                printf("connect %s\n", argv[x]);
+                if (nn_connect(sock, argv[x]) < 0) {
+                        fatal("nn_connect");
+                }
+        }
+
+        sleep(1); // wait for connections
+        int to = 100;
+        if (nn_setsockopt(sock, NN_SOL_SOCKET, NN_RCVTIMEO, &to,
+                          sizeof (to)) < 0) {
+                fatal("nn_setsockopt");
+        }
+}
+
+static void initNode(int argc, char **argv){
+        int nb_node = atoi(argv[1]);
+
+        char urls[LENGTH][21];
+        for(int i = 0; i < LENGTH; i++) {
+                int idx = (i != nb_node) ? (i > nb_node) ? i : i + 1 : 0;
+                sprintf(urls[idx], "ipc:///tmp/node%d.ipc", i);
+        }
+
+        node(LENGTH + 2, urls);
 }
 
 static void initGL() {
@@ -200,6 +261,9 @@ static void keydown(int keycode) {
                         _cam.x = _cam.y = _cam.z = 0;
                 }
                 break;
+        case 'f':
+                find = !find;
+                break;
         /* Points de vue */
         case '0':
                 view = 0; // Normal
@@ -309,7 +373,47 @@ static void draw() {
                 draw_interact(_pBasicId);
         }
 
-        /* enables cull facing and depth testing */
+        if(on_spaceship == 1) {
+                /**
+                 * Partie Reseau
+                 **/
+                /* Transforme les coordonnees du joueur en message a envoye */
+                vector3 coordinates = {_cam.x, _cam.y, _cam.z};
+                char* message = struct2str(1, coordinates);
+
+                /* Envoye du message */
+                int sz_n = strlen(message) + 1; // '\0' too
+                if (nn_send(sock, message, sz_n, NN_DONTWAIT) < 0) {
+                        fatal("nn_send");
+                }
+
+                /* Reception des messages */
+                char *buf = NULL;
+                int recv = nn_recv(sock, &buf, NN_MSG, NN_DONTWAIT);
+                if (recv >= 0) {
+                        /* Traduction du message en coordonnees */
+                        vector3 client = str2stuct(buf);
+                        nn_freemsg(buf);
+
+                        /* Affichage du joueur */
+                        glUseProgram(_pModelId);
+                        gl4duBindMatrix("modelMatrix");
+                        gl4duLoadIdentityf();
+
+                        gl4duTranslatef(client.x, client.y, client.z);
+                        gl4duScalef(2.0 / 5.0, 2.0 / 5.0, 2.0 / 5.0);
+
+                        apply_stars(_pModelId);
+                        assimpDrawScene();
+
+                        if(find == 1) {
+                                //draw_pointer(client);
+                        }
+
+                        glUseProgram(0);
+                }
+        }
+
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
 }
