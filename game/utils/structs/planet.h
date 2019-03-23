@@ -11,6 +11,7 @@ struct _satellite {
   entitie body;
   const char *path_sprite;
   GLuint _texId;
+  int collision;
 };
 
 #endif

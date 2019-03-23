@@ -2,10 +2,10 @@
 #include "utils/merge.h"
 
 static satellite s[4] = {
-        {1, { { 428, 160, 30, 100 }, { 0, 0, 0 } }, "assets/textures/star.jpg", 0},
-        {2, { { 150, -124, 170, 60 }, { 0, 0, 0 } }, "assets/textures/terre.png", 0},
-        {3, { { 141, 78, 60, 12 }, { 0, 0, 0 } }, "assets/textures/asteroid.jpg", 0},
-        {3, { { 91, 40, 230, 5 }, { 0, 0, 0 } }, "assets/textures/asteroid.jpg", 0}
+        {1, { { 250, 160, 30, 100 }, { 0, 0, 0 } }, "assets/textures/star.jpg", 0, 0},
+        {2, { { 150, -124, 170, 78 }, { 0, 0, 0 } }, "assets/textures/terre.png", 0, 0},
+        {3, { { 141, 78, 60, 12 }, { 0, 0, 0 } }, "assets/textures/asteroid.jpg", 0, 0},
+        {3, { { 91, 40, 230, 5 }, { 0, 0, 0 } }, "assets/textures/asteroid.jpg", 0, 0}
 };
 
 static int size = 4;
@@ -28,8 +28,8 @@ void update_space(int x, int y, int z) {
                         if(i == j) continue;
                         if(hit_satellite(s[i], s[j]) == 1) {
                                 /* Si collision alors on modifie les vecteurs de direction */
-                                //s[i].dir = invert(s[i].dir);
-                                //s[j].dir = invert(s[j].dir);
+                                s[i].collision = !s[i].collision;
+                                s[j].collision = !s[j].collision;
                         }
                 }
         }
@@ -57,6 +57,16 @@ void apply_stars(GLuint _pBasicId){
                         return;
                 }
         }
+}
+
+GLuint hit_player_satellite(entitie player){
+        sphere player_fut = apply_dir(player.data, player.dir);
+        for(int i = 0; i < size; i++) {
+                if(hit_sphere_sphere(player_fut, s[i].body.data) == 1) {
+                        return s[i]._texId;
+                }
+        }
+        return 0;
 }
 
 void quit_space(){

@@ -8,5 +8,6 @@ struct _vector3 {
 
 vector3 zero();
 vector3 invert(vector3);
+vector3 inertia();
 
 #endif

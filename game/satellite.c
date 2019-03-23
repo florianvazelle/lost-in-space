@@ -6,7 +6,7 @@
 
 static GLuint _sphere = 0;
 
-static float inertia = 0.0f;
+static float rot_earth = 0.0f;
 static GLfloat _lumPos[4] = {250, 160, 30, 1.0};
 
 GLuint init_satellite(satellite s) {
@@ -16,20 +16,24 @@ GLuint init_satellite(satellite s) {
 }
 
 vector3 ellipse(satellite s){
-        s.body.dir.x = 250 + 178 * cos(2 * M_PI / 360 * inertia) - s.body.data.x;
-        s.body.dir.y = 160 + 178 * sin(2 * M_PI / 360 * inertia) - s.body.data.y;
-        s.body.dir.z = 30  + 178 * sin(2 * M_PI / 360 * inertia) - s.body.data.z;
-        inertia += 0.2f;
-        if(inertia >= 360.0f) inertia = 0.0f;
+        s.body.dir.x = 250 + 200 * cos(2 * M_PI / 360 * rot_earth) - s.body.data.x;
+        s.body.dir.y = 160 + 200 * sin(2 * M_PI / 360 * rot_earth) - s.body.data.y;
+        s.body.dir.z = 30  + 200 * sin(2 * M_PI / 360 * rot_earth) - s.body.data.z;
+        //printf("%.03f %.03f %.03f\n", s.body.dir.x, s.body.dir.y, s.body.dir.z);
+        rot_earth += 0.2f;
+        if(rot_earth >= 360.0f) rot_earth = 0.0f;
         return s.body.dir;
 }
 
 vector3 update_satellite(satellite s) {
         if(s.id == 2) {
                 s.body.dir = ellipse(s);
+        } else if(s.id == 3) {
+                s.body.dir = inertia();
         } else {
                 s.body.dir = zero();
         }
+        if(s.collision == 1) s.body.dir = invert(s.body.dir);
         return s.body.dir;
 }
 
