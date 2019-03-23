@@ -118,6 +118,7 @@ static void idle(void) {
         t0 = t;
 
         if(on_spaceship == 1) {
+                sphere test_interact = { _cam.x, _cam.y, _cam.z, 10.0f };
                 entitie player = {{ _cam.x, _cam.y, _cam.z, 1.5f }, { 0, 0, 0 }};
 
                 if(angleX > _wW/2)
@@ -136,13 +137,12 @@ static void idle(void) {
                 }
 
                 update_space(_cam.x, _cam.y, _cam.z);
-                GLuint _planetTexId = hit_player_satellite(player);
-                if(_planetTexId == 0) {
+                interact = hit_interact(test_interact);
+                if(hit_player_satellite(player) == 0) {
                         _cam.x = player.data.x + player.dir.x;
                         _cam.y = player.data.y + player.dir.y;
                         _cam.z = player.data.z + player.dir.z;
                 }
-                interact = _planetTexId;
         } else {
                 if(angleX > _wW/2)
                         _cam.theta += dt * dtheta * tan(angleX);
@@ -235,16 +235,18 @@ static void pmotion(int x, int y) {
 }
 
 static void draw() {
-        /* Debut */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        /* Affichage dans l'espace */
         if(on_spaceship == 1) {
                 gl4duBindMatrix("viewMatrix");
                 gl4duLoadIdentityf();
+                /* Vu exterieur */
                 if(view == 0)
                         gl4duLookAtf(_cam.x, _cam.y, _cam.z,
                                      _cam.x - sin(_cam.theta), _cam.y - angleY,  _cam.z - cos(_cam.theta),
                                      0.0, 1.0, 0.0);
+                /* Vu interieur */
                 else if(view == 1)
                         gl4duLookAtf(_cam.x, _cam.y + 0.18, _cam.z,
                                      _cam.x - sin(_cam.theta), _cam.y - tan(angleY * 3),  _cam.z - cos(_cam.theta),
@@ -270,11 +272,7 @@ static void draw() {
                         apply_stars(_pModelId);
                         assimpDrawScene();
 
-                        glUseProgram(_pBasicId);
-                        glUniform1i(glGetUniformLocation(_pBasicId, "phong"), 0);
-                        draw_crosshair(xClip, yClip);
-
-                        glUseProgram(0);
+                        draw_crosshair(xClip, yClip, _pBasicId);
                 } else if(view == 1) {
                         draw_cockpit(_pBasicId);
                 }
@@ -290,12 +288,16 @@ static void draw() {
                 glUseProgram(_pBasicId);
                 gl4duBindMatrix("modelMatrix");
                 gl4duLoadIdentityf();
+
                 glActiveTexture(GL_TEXTURE0);
                 glUniform1i(glGetUniformLocation(_pBasicId, "myTexture"), 0);
                 glUniform1i(glGetUniformLocation(_pBasicId, "phong"), 0);
+
+                static float _planeScale = 100.0f;
                 gl4duPushMatrix(); {
+                        //gl4duTranslatef(_cam.x, 0, _cam.z);
                         gl4duRotatef(-90, 1, 0, 0);
-                        gl4duScalef(100, 100, 1);
+                        gl4duScalef(_planeScale, _planeScale, 1);
                         gl4duSendMatrices();
                 } gl4duPopMatrix();
                 glBindTexture(GL_TEXTURE_2D, interact);

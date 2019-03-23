@@ -36,7 +36,10 @@ static void part_crosshair(double rot, double posx, double posy) {
         gl4dgDraw(_plane);
 }
 
-void draw_crosshair(float x, float y) {
+void draw_crosshair(float x, float y, GLuint _pBasicId) {
+        glUseProgram(_pBasicId);
+        glUniform1i(glGetUniformLocation(_pBasicId, "phong"), 0);
+
         glDisable(GL_CULL_FACE);
         glDisable(GL_DEPTH_TEST);
         glBindTexture(GL_TEXTURE_2D, _crosshairTexId);
@@ -45,6 +48,8 @@ void draw_crosshair(float x, float y) {
         part_crosshair(120.0, -0.1 + x, -0.05 + y);
         part_crosshair(-60.0, 0.1 + x, 0.05 + y);
         part_crosshair(-120.0, 0.1 + x, -0.05 + y);
+
+        glUseProgram(0);
 }
 
 void quit_crosshair() {

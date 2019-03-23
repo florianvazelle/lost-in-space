@@ -8,9 +8,11 @@ static GLuint _spaceTexId = 0;
 static GLuint skyboxVAO = 0;
 
 void init_skybox() {
+        /* Chargement des shaders pour la skybox */
         _pSkyboxId = gl4duCreateProgram("<vs>assets/shaders/skybox.vs",
                                         "<fs>assets/shaders/skybox.fs", NULL);
 
+        /* Chargement de la texture cube */
         const char *skybox_path_sprite[6] = {
                 "assets/textures/skybox/rigth.png", "assets/textures/skybox/left.png",
                 "assets/textures/skybox/top.png",   "assets/textures/skybox/bottom.png",
@@ -19,7 +21,6 @@ void init_skybox() {
         _spaceTexId = load_cube_map_sprite_texture(_spaceTexId, skybox_path_sprite);
 
         GLfloat skyboxVertices[] = {
-                // Positions
                 -1.0f, 1.0f,  -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,  -1.0f, -1.0f,
                 1.0f,  -1.0f, -1.0f, 1.0f,  1.0f,  -1.0f, -1.0f, 1.0f,  -1.0f,
 
@@ -41,7 +42,7 @@ void init_skybox() {
 
         GLuint skyboxVBO = 0;
 
-        // Setup skybox VAO
+        /* Configuration de la skybox VAO */
         glGenVertexArrays(1, &skyboxVAO);
         glGenBuffers(1, &skyboxVBO);
         glBindVertexArray(skyboxVAO);
@@ -53,20 +54,16 @@ void init_skybox() {
 }
 
 void draw_skybox(GLfloat x, GLfloat y, GLfloat z) {
-        // Draw skybox as last
         glDepthFunc(GL_LEQUAL); // Change depth function so depth test passes when
                                 // values are equal to depth buffer's content
         glUseProgram(_pSkyboxId);
-        glActiveTexture(GL_TEXTURE0);
 
-        // skybox cube
         glBindVertexArray(skyboxVAO);
         glBindTexture(GL_TEXTURE_CUBE_MAP, _spaceTexId);
         gl4duPushMatrix(); {
                 gl4duTranslatef(x, y, z);
                 gl4duSendMatrices();
         } gl4duPopMatrix();
-        // gl4duSendMatrices();
 
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);

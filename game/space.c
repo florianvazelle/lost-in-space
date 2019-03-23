@@ -11,6 +11,8 @@ static satellite s[4] = {
 static int size = 4;
 
 void init_space(){
+        /* Initialisation des differents satellites
+           (Chargement des textures) */
         for(int i = 0; i < size; i++) {
                 s[i]._texId = init_satellite(s[i]);
         }
@@ -44,12 +46,14 @@ void update_space(int x, int y, int z) {
 }
 
 void draw_space(GLuint _pBasicId, GLuint _phong){
+        /* Affichage des differents satellites */
         for (int i = size - 1; i >= 0; i--) {
                 draw_satellite(s[i], _pBasicId, _phong);
         }
 }
 
 void apply_stars(GLuint _pBasicId){
+        /* Application de la lumiere en fonction du soleil le plus proche */
         for (int i = size - 1; i >= 0; i--) {
                 if(s[i].id == 1) {
                         GLfloat _lumPos[4] = {s[i].body.data.x, s[i].body.data.y, s[i].body.data.z, 1.0};
@@ -59,10 +63,21 @@ void apply_stars(GLuint _pBasicId){
         }
 }
 
-GLuint hit_player_satellite(entitie player){
+int hit_player_satellite(entitie player) {
+        /* Test la collision entre le joueur et les satellites */
         sphere player_fut = apply_dir(player.data, player.dir);
         for(int i = 0; i < size; i++) {
                 if(hit_sphere_sphere(player_fut, s[i].body.data) == 1) {
+                        return 1;
+                }
+        }
+        return 0;
+}
+
+GLuint hit_interact(sphere player) {
+        /* Test si le joueur est dans une zone d'interaction */
+        for(int i = 0; i < size; i++) {
+                if(hit_sphere_sphere(player, s[i].body.data) == 1) {
                         return s[i]._texId;
                 }
         }
