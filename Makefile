@@ -22,8 +22,8 @@ PROGNAME = exe
 VERSION = 1.0
 distdir = $(PROGNAME)-$(VERSION)
 HEADERS =
-UTILS = game/utils/send_info.c game/utils/load_texture.c game/utils/merge.c game/utils/structs/sphere.c game/utils/structs/vector3.c
-GAME = game/satellite.c game/cockpit.c game/skybox.c game/crosshair.c game/space.c game/interact.c game/window.c
+UTILS = game/utils/convert.c game/utils/load_texture.c game/utils/merge.c game/utils/structs/sphere.c game/utils/structs/vector3.c
+GAME = game/config.c game/p2p.c game/landed.c game/satellite.c game/cockpit.c game/skybox.c game/crosshair.c game/space.c game/interact.c game/window.c
 LIBS = libs/assimp/assimp.c
 SOURCES = $(LIBS) $(UTILS) $(GAME)
 OBJ = $(SOURCES:.c=.o)

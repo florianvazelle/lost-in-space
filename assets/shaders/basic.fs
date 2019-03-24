@@ -2,7 +2,7 @@
 
 uniform sampler2D myTexture;
 uniform vec4 lumPos;
-uniform int phong;
+uniform int light;
 uniform int type;
 
 in vec3 gsoNormal;
@@ -13,7 +13,7 @@ in vec2 gsoTexCoord;
 out vec4 fragColor;
 
 void main(void) {
-  if (phong != 0) {
+  if (light != 0) {
     const vec4 lum_diffus = vec4(1, 1, 0.9, 1);
     const vec4 lum_amb = vec4(0.8, 0.8, 1, 1);
     const vec4 lum_spec = vec4(1, 1, 0.75, 1);

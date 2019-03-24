@@ -1,13 +1,11 @@
 #include <GL4D/gl4dp.h>
 
+#include "config.h"
 #include "utils/load_texture.h"
 
-static GLuint _plane = 0;
 static GLuint _crosshairTexId = 0;
 
 void init_crosshair() {
-        _plane = gl4dgGenQuadf();
-
         GLuint _crosshairTex[] = {RGB(255, 255, 255)};
         _crosshairTexId = load_2d_texture(_crosshairTexId, _crosshairTex);
 }
@@ -36,9 +34,9 @@ static void part_crosshair(double rot, double posx, double posy) {
         gl4dgDraw(_plane);
 }
 
-void draw_crosshair(float x, float y, GLuint _pBasicId) {
+void draw_crosshair(float x, float y) {
         glUseProgram(_pBasicId);
-        glUniform1i(glGetUniformLocation(_pBasicId, "phong"), 0);
+        glUniform1i(glGetUniformLocation(_pBasicId, "light"), 0);
 
         glDisable(GL_CULL_FACE);
         glDisable(GL_DEPTH_TEST);

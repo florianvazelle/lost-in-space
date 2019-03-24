@@ -1,3 +1,4 @@
+#include "config.h"
 #include "satellite.h"
 #include "utils/merge.h"
 
@@ -45,14 +46,14 @@ void update_space(int x, int y, int z) {
         tri_fusion(s, size, x, y, z);
 }
 
-void draw_space(GLuint _pBasicId, GLuint _phong){
+void draw_space(){
         /* Affichage des differents satellites */
         for (int i = size - 1; i >= 0; i--) {
-                draw_satellite(s[i], _pBasicId, _phong);
+                draw_satellite(s[i]);
         }
 }
 
-void apply_stars(GLuint _pBasicId){
+void apply_stars(){
         /* Application de la lumiere en fonction du soleil le plus proche */
         for (int i = size - 1; i >= 0; i--) {
                 if(s[i].id == 1) {

@@ -2,16 +2,13 @@
 #include <SDL_image.h>
 
 #include "satellite.h"
+#include "config.h"
 #include "utils/load_texture.h"
-
-static GLuint _sphere = 0;
 
 static float rot_earth = 0.0f;
 static GLfloat _lumPos[4] = {250, 160, 30, 1.0};
 
 GLuint init_satellite(satellite s) {
-        if (_sphere == 0)
-                _sphere = gl4dgGenSpheref(50, 50);
         return load_2d_sprite_texture(s._texId, s.path_sprite);
 }
 
@@ -37,7 +34,7 @@ vector3 update_satellite(satellite s) {
         return s.body.dir;
 }
 
-void draw_satellite(satellite s, GLuint _pBasicId, GLuint _phong) {
+void draw_satellite(satellite s) {
         glUseProgram(_pBasicId);
 
         gl4duBindMatrix("modelMatrix");
@@ -46,7 +43,7 @@ void draw_satellite(satellite s, GLuint _pBasicId, GLuint _phong) {
         glActiveTexture(GL_TEXTURE0);
         glUniform1i(glGetUniformLocation(_pBasicId, "myTexture"), 0);
 
-        glUniform1i(glGetUniformLocation(_pBasicId, "phong"), _phong);
+        glUniform1i(glGetUniformLocation(_pBasicId, "light"), _light);
         glUniform1i(glGetUniformLocation(_pBasicId, "type"), s.id);
         glUniform4fv(glGetUniformLocation(_pBasicId, "lumPos"), 1, _lumPos);
 

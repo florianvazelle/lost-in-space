@@ -2,7 +2,7 @@
 #define _COCKPIT_H
 
 void init_cockpit();
-void draw_cockpit(GLuint);
+void draw_cockpit();
 void quit_cockpit();
 
 #endif

@@ -1,38 +1,27 @@
 #include <GL4D/gl4duw_SDL2.h>
 #include <SDL_image.h>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-
-#include <nanomsg/nn.h>
-#include <nanomsg/bus.h>
-
+#include "config.h"
 #include "crosshair.h"
 #include "space.h"
 #include "skybox.h"
 #include "cockpit.h"
 #include "interact.h"
+#include "landed.h"
+#include "p2p.h"
 
-#include "utils/send_info.h"
+#include "utils/convert.h"
 #include "utils/load_texture.h"
-
-#define LENGTH 3
 
 static int _wW = 800, _wH = 600;
 static int _xm = 400, _ym = 300;
-static GLuint _pBasicId = 0;
-static GLuint _pModelId = 0;
 
 static float xClip, yClip;
 static GLfloat angleY;
 static int view = 0;
 
-static GLuint _plane = 0;
 static int on_spaceship = 1;
 static GLuint interact = 0;
-static int find = 0;
 
 enum kyes_t { KLEFT = 0, KRIGHT, KUP, KDOWN };
 
@@ -45,14 +34,11 @@ typedef struct  {
 
 static cam_t _cam = {0, 0, 1.0, 0};
 
-static GLuint _phong = 1;
-
 extern void assimpInit(const char * filename);
 extern void assimpDrawScene(void);
 extern void assimpQuit(void);
 
 static int sock;
-static void initNode(int, char **);
 
 static void initGL(void);
 static void initData(void);
@@ -69,11 +55,11 @@ int main(int argc, char **argv) {
                 fprintf(stderr, "Usage: bus <NODE_ID>\n");
                 exit(1);
         }
+        sock = initNode(argc, argv);
         if (!gl4duwCreateWindow(argc, argv, "GL4Dummies", 10, 10, _wW, _wH,
                                 GL4DW_RESIZABLE | GL4DW_SHOWN))
                 return 1;
         assimpInit("assets/models/spaceship.obj");
-        initNode(argc, argv);
         initGL();
         initData();
         atexit(quit);
@@ -87,47 +73,6 @@ int main(int argc, char **argv) {
         return 0;
 }
 
-void fatal(const char *func) {
-        fprintf(stderr, "%s: %s\n", func, nn_strerror(nn_errno()));
-        exit(1);
-}
-
-void node(const int argc, const char argv[3][21]) {
-        if ((sock = nn_socket (AF_SP, NN_BUS)) < 0) {
-                fatal("nn_socket");
-        }
-        if (nn_bind(sock, argv[0]) < 0) {
-                fatal("nn_bind");
-        }
-
-        sleep(1); // wait for peers to bind
-        for (int x = 1; x < LENGTH; x++) {
-                printf("connect %s\n", argv[x]);
-                if (nn_connect(sock, argv[x]) < 0) {
-                        fatal("nn_connect");
-                }
-        }
-
-        sleep(1); // wait for connections
-        int to = 100;
-        if (nn_setsockopt(sock, NN_SOL_SOCKET, NN_RCVTIMEO, &to,
-                          sizeof (to)) < 0) {
-                fatal("nn_setsockopt");
-        }
-}
-
-static void initNode(int argc, char **argv){
-        int nb_node = atoi(argv[1]);
-
-        char urls[LENGTH][21];
-        for(int i = 0; i < LENGTH; i++) {
-                int idx = (i != nb_node) ? (i > nb_node) ? i : i + 1 : 0;
-                sprintf(urls[idx], "ipc:///tmp/node%d.ipc", i);
-        }
-
-        node(LENGTH + 2, urls);
-}
-
 static void initGL() {
         glClearColor(0.0, 0.0, 0.0, 0.0);
 
@@ -135,8 +80,7 @@ static void initGL() {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_TEXTURE_2D);
 
-        _pBasicId = gl4duCreateProgram("<vs>assets/shaders/basic.vs", "<gs>assets/shaders/basic.gs","<fs>assets/shaders/basic.fs", NULL);
-        _pModelId = gl4duCreateProgram("<vs>assets/shaders/model.vs", "<fs>assets/shaders/model.fs", NULL);
+        init_config();
 
         gl4duGenMatrix(GL_FLOAT, "viewMatrix");
         gl4duGenMatrix(GL_FLOAT, "modelMatrix");
@@ -146,8 +90,6 @@ static void initGL() {
 }
 
 static void initData(void) {
-        _plane = gl4dgGenQuadf();
-
         init_crosshair();
         init_space();
         init_skybox();
@@ -251,8 +193,8 @@ static void keydown(int keycode) {
                 }
                 break;
 
-        case 'p':
-                _phong = !_phong;
+        case 'l':
+                _light = !_light;
                 break;
         /* Interagir */
         case GL4DK_RETURN:
@@ -261,12 +203,9 @@ static void keydown(int keycode) {
                         _cam.x = _cam.y = _cam.z = 0;
                 }
                 break;
-        case 'f':
-                find = !find;
-                break;
         /* Points de vue */
         case '0':
-                view = 0; // Normal
+                view = 0; // Exterieur
                 break;
         case '1':
                 view = 1; // Interieur
@@ -293,11 +232,17 @@ static void keyup(int keycode) {
         }
 }
 
+/**
+ * Recupere la position de la souris
+ **/
 static void pmotion(int x, int y) {
         _xm = x;
         _ym = y;
 }
 
+/**
+ * Dessiner tout
+ **/
 static void draw() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -317,7 +262,7 @@ static void draw() {
                                      0.0, 1.0, 0.0);
 
                 draw_skybox(_cam.x, _cam.y, _cam.z);
-                draw_space(_pBasicId, _phong);
+                draw_space(_light);
 
                 if(view == 0) {
                         glUseProgram(_pModelId);
@@ -333,14 +278,16 @@ static void draw() {
                         gl4duRotatef(-(xClip * 180.0 / M_PI), 0, 1, 0);
                         gl4duRotatef(-(yClip * 180.0 / M_PI), 1, 0, 0);
 
-                        apply_stars(_pModelId);
+                        apply_stars();
                         assimpDrawScene();
 
-                        draw_crosshair(xClip, yClip, _pBasicId);
+                        draw_crosshair(xClip, yClip);
                 } else if(view == 1) {
-                        draw_cockpit(_pBasicId);
+                        draw_cockpit();
                 }
-        } else {
+        }
+        /* Affichage sur un satellite */
+        else {
                 gl4duBindMatrix("viewMatrix");
                 gl4duLoadIdentityf();
                 gl4duLookAtf(_cam.x, 3.0, _cam.z, _cam.x - sin(_cam.theta),
@@ -348,35 +295,18 @@ static void draw() {
                              _cam.z - cos(_cam.theta), 0.0, 1.0, 0.0);
 
                 draw_skybox(_cam.x, 3.0, _cam.z);
-
-                glUseProgram(_pBasicId);
-                gl4duBindMatrix("modelMatrix");
-                gl4duLoadIdentityf();
-
-                glActiveTexture(GL_TEXTURE0);
-                glUniform1i(glGetUniformLocation(_pBasicId, "myTexture"), 0);
-                glUniform1i(glGetUniformLocation(_pBasicId, "phong"), 0);
-
-                static float _planeScale = 100.0f;
-                gl4duPushMatrix(); {
-                        //gl4duTranslatef(_cam.x, 0, _cam.z);
-                        gl4duRotatef(-90, 1, 0, 0);
-                        gl4duScalef(_planeScale, _planeScale, 1);
-                        gl4duSendMatrices();
-                } gl4duPopMatrix();
-                glBindTexture(GL_TEXTURE_2D, interact);
-                gl4dgDraw(_plane);
-                glUseProgram(0);
+                draw_landed(interact);
         }
 
         if(interact != 0) {
-                draw_interact(_pBasicId);
+                draw_interact();
         }
 
         if(on_spaceship == 1) {
                 /**
                  * Partie Reseau
                  **/
+
                 /* Transforme les coordonnees du joueur en message a envoye */
                 vector3 coordinates = {_cam.x, _cam.y, _cam.z};
                 char* message = struct2str(1, coordinates);
@@ -403,12 +333,8 @@ static void draw() {
                         gl4duTranslatef(client.x, client.y, client.z);
                         gl4duScalef(2.0 / 5.0, 2.0 / 5.0, 2.0 / 5.0);
 
-                        apply_stars(_pModelId);
+                        apply_stars();
                         assimpDrawScene();
-
-                        if(find == 1) {
-                                //draw_pointer(client);
-                        }
 
                         glUseProgram(0);
                 }

@@ -1,19 +1,18 @@
 #include <GL4D/gl4dp.h>
 
+#include "config.h"
 #include "utils/load_texture.h"
 
-static GLuint _planeC = 0;
 static GLuint _cockpitTexId = 0;
 
 void init_cockpit() {
-        _planeC = gl4dgGenQuadf();
         _cockpitTexId =
                 load_2d_sprite_texture(_cockpitTexId, "assets/textures/cockpit.png");
 }
 
-void draw_cockpit(GLuint _pBasicId) {
+void draw_cockpit() {
         glUseProgram(_pBasicId);
-        glUniform1i(glGetUniformLocation(_pBasicId, "phong"), 0);
+        glUniform1i(glGetUniformLocation(_pBasicId, "light"), 0);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -37,7 +36,7 @@ void draw_cockpit(GLuint _pBasicId) {
         gl4duBindMatrix("modelMatrix");
 
         glBindTexture(GL_TEXTURE_2D, _cockpitTexId);
-        gl4dgDraw(_planeC);
+        gl4dgDraw(_plane);
 
         glDisable(GL_TEXTURE_2D);
         glBlendFunc (GL_ONE, GL_ZERO);

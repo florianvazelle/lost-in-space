@@ -1,22 +1,19 @@
 #include <GL4D/gl4dp.h>
 #include <SDL_image.h>
 
+#include "config.h"
 #include "utils/load_texture.h"
 
-static GLuint _planeI = 0;
 static GLuint _interactTexId = 0;
 
 void init_interact(){
-        if(_planeI == 0)
-                _planeI = gl4dgGenQuadf();
-
         _interactTexId = load_2d_sprite_texture(_interactTexId, "assets/textures/entree.png");
 }
 
-void draw_interact(GLuint _pBasicId){
+void draw_interact(){
         glUseProgram(_pBasicId);
 
-        glUniform1i(glGetUniformLocation(_pBasicId, "phong"), 0);
+        glUniform1i(glGetUniformLocation(_pBasicId, "light"), 0);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -42,7 +39,7 @@ void draw_interact(GLuint _pBasicId){
         gl4duBindMatrix("modelMatrix");
 
         glBindTexture(GL_TEXTURE_2D, _interactTexId);
-        gl4dgDraw(_planeI);
+        gl4dgDraw(_plane);
 
         glDisable(GL_TEXTURE_2D);
         glBlendFunc (GL_ONE, GL_ZERO);
