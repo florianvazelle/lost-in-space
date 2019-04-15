@@ -11,7 +11,7 @@ static satellite s[4] = {
 
 static int size = 4;
 
-void init_space(){
+void init_space() {
         /* Initialisation des differents satellites
            (Chargement des textures) */
         for(int i = 0; i < size; i++) {

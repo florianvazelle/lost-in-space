@@ -52,8 +52,8 @@ static void quit(void);
 
 int main(int argc, char **argv) {
         if (argc < 2) {
-                fprintf(stderr, "Usage: bus <NODE_ID>\n");
-                exit(1);
+                printf("Usage: %s <NODE_ID>\n", argv[0]);
+                return 1;
         }
         sock = initNode(argc, argv);
         if (!gl4duwCreateWindow(argc, argv, "GL4Dummies", 10, 10, _wW, _wH,

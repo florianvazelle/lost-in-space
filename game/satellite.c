@@ -12,7 +12,7 @@ GLuint init_satellite(satellite s) {
         return load_2d_sprite_texture(s._texId, s.path_sprite);
 }
 
-vector3 ellipse(satellite s){
+static vector3 ellipse(satellite s){
         s.body.dir.x = 250 + 200 * cos(2 * M_PI / 360 * rot_earth) - s.body.data.x;
         s.body.dir.y = 160 + 200 * sin(2 * M_PI / 360 * rot_earth) - s.body.data.y;
         s.body.dir.z = 30  + 200 * sin(2 * M_PI / 360 * rot_earth) - s.body.data.z;
