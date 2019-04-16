@@ -37,6 +37,7 @@ static void part_crosshair(double rot, double posx, double posy) {
 void draw_crosshair(float x, float y) {
         glUseProgram(_pBasicId);
         glUniform1i(glGetUniformLocation(_pBasicId, "light"), 0);
+        glUniform1f(glGetUniformLocation(_pBasicId, "explosion"), 0);
 
         glDisable(GL_CULL_FACE);
         glDisable(GL_DEPTH_TEST);

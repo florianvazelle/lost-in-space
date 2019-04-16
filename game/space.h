@@ -13,4 +13,6 @@ GLuint hit_interact(sphere);
 
 void quit_space(void);
 
+void explose_test(void);
+
 #endif

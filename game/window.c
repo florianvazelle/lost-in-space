@@ -210,6 +210,9 @@ static void keydown(int keycode) {
         case '1':
                 view = 1; // Interieur
                 break;
+        case '2':
+                explose_test(); //Debug
+                break;
         }
 }
 

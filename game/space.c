@@ -3,10 +3,10 @@
 #include "utils/merge.h"
 
 static satellite s[4] = {
-        {1, { { 250, 160, 30, 100 }, { 0, 0, 0 } }, "assets/textures/star.jpg", 0, 0},
-        {2, { { 150, -124, 170, 78 }, { 0, 0, 0 } }, "assets/textures/terre.png", 0, 0},
-        {3, { { 141, 78, 60, 12 }, { 0, 0, 0 } }, "assets/textures/asteroid.jpg", 0, 0},
-        {3, { { 91, 40, 230, 5 }, { 0, 0, 0 } }, "assets/textures/asteroid.jpg", 0, 0}
+        {1, { { 250, 160, 30, 100 }, { 0, 0, 0 } }, "assets/textures/star.jpg", 0, 0, 0.0},
+        {2, { { 150, -124, 170, 78 }, { 0, 0, 0 } }, "assets/textures/terre.png", 0, 0, 0.0},
+        {3, { { 141, 78, 60, 12 }, { 0, 0, 0 } }, "assets/textures/asteroid.jpg", 0, 0, 0.0},
+        {3, { { 91, 40, 230, 5 }, { 0, 0, 0 } }, "assets/textures/asteroid.jpg", 0, 0, 0.0}
 };
 
 static int size = 4;
@@ -22,7 +22,12 @@ void init_space() {
 void update_space(int x, int y, int z) {
         /* Calcul les vecteurs de directions */
         for(int i = 0; i < size; i++) {
-                s[i].body.dir = update_satellite(s[i]);
+                int call_back = update_satellite(&s[i]);
+                if(call_back == 1) {
+                        printf("Fin\n");
+                        for(int j = i; j < size - 1; j++) s[j] = s[j + 1];
+                        size -= 1;
+                }
         }
 
         /* Test si il a collision entre les satellites */
@@ -89,4 +94,9 @@ void quit_space(){
         for(int i = 0; i < size; i++) {
                 quit_satellite(s[i]);
         }
+}
+
+//debug
+void explose_test(){
+        explose(&s[0]);
 }

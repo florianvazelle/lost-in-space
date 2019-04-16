@@ -12,6 +12,7 @@ struct _satellite {
   const char *path_sprite;
   GLuint _texId;
   int collision;
+  float explosion;
 };
 
 #endif
