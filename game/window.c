@@ -2,20 +2,22 @@
 #include <GL4D/gl4duw_SDL2.h>
 #include <SDL_image.h>
 
-#include "cockpit.h"
 #include "config.h"
-#include "crosshair.h"
-#include "interact.h"
-#include "landed.h"
-#include "p2p.h"
-#include "skybox.h"
-#include "space.h"
 
-#include "hypervelocity.h"
-#include "laser.h"
+#include "view/cockpit.h"
+#include "view/crosshair.h"
+#include "view/interact.h"
+#include "view/skybox.h"
 
-#include "utils/convert.h"
-#include "utils/load_texture.h"
+#include "level/landed.h"
+#include "level/space.h"
+#include "network/p2p.h"
+
+#include "action/hypervelocity.h"
+#include "action/laser.h"
+
+#include "util/convert.h"
+#include "util/load_texture.h"
 
 static int _wW = 800, _wH = 600;
 static int _xm = 400, _ym = 300;
@@ -31,11 +33,6 @@ static GLuint interact = 0;
 enum kyes_t { KLEFT = 0, KRIGHT, KUP, KDOWN };
 
 static GLuint _keys[] = {0, 0, 0, 0};
-
-/*typedef struct  {
-        GLfloat x, y, z;
-        GLfloat theta;
-   } cam_t;*/
 
 static cam_t _cam = {0, 0, 1.0, 0};
 

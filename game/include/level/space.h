@@ -1,7 +1,7 @@
 #ifndef _SPACE_H
 #define _SPACE_H
 
-#include "utils/structs/entitie.h"
+#include "util/struct/entitie.h"
 
 void init_space(void);
 void update_space(int, int, int);

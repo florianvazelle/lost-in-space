@@ -1,6 +1,5 @@
-#include "config.h"
-#include "laser.h"
-#include "space.h"
+#include "action/laser.h"
+#include "level/space.h"
 
 typedef struct {
   vector3 player;
@@ -41,7 +40,7 @@ void draw_shoot() {
   glActiveTexture(GL_TEXTURE0);
   glUniform1i(glGetUniformLocation(_pBasicId, "myTexture"), 0);
 
-  glUniform1i(glGetUniformLocation(_pBasicId, "light"), 0);
+  glUniform1i(glGetUniformLocation(_pBasicId, "light"), 1);
   glUniform1f(glGetUniformLocation(_pBasicId, "explosion"), 0);
 
   glBindTexture(GL_TEXTURE_2D, _laserId);

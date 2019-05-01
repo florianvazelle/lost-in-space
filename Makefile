@@ -13,7 +13,7 @@ MKDIR = mkdir
 CHMOD = chmod
 CP = rsync -R
 # déclaration des options du compilateur
-CFLAGS = -Wall -O3
+CFLAGS = -Wall -O3 -I./game/include
 CPPFLAGS = -I.
 LDFLAGS = -lm -lassimp -lSDL2_image -lnanomsg
 
@@ -22,10 +22,18 @@ PROGNAME = lostinspace
 VERSION = 1.0
 distdir = $(PROGNAME)-$(VERSION)
 HEADERS =
-UTILS = game/utils/convert.c game/utils/load_texture.c game/utils/merge.c game/utils/structs/sphere.c game/utils/structs/vector3.c
-GAME = game/config.c game/hypervelocity.c game/laser.c game/p2p.c game/landed.c game/satellite.c game/cockpit.c game/skybox.c game/crosshair.c game/space.c game/interact.c game/window.c
-LIBS = libs/assimp/assimp.c
-SOURCES = $(LIBS) $(UTILS) $(GAME)
+ACTION = game/src/action/hypervelocity.c game/src/action/laser.c
+LEVEL = game/src/level/landed.c game/src/level/satellite.c game/src/level/space.c
+NETWORK = game/src/network/p2p.c
+
+UTIL = game/src/util/convert.c game/src/util/load_texture.c game/src/util/merge.c \
+			 game/src/util/struct/sphere.c game/src/util/struct/vector3.c
+VIEW = game/src/view/cockpit.c game/src/view/crosshair.c game/src/view/interact.c \
+			 game/src/view/skybox.c
+SRC = $(ACTION) $(LEVEL) $(NETWORK) $(UTIL) $(VIEW) game/src/config.c
+GAME = $(SRC) game/window.c
+LIB = lib/assimp/assimp.c
+SOURCES = $(LIB) $(GAME)
 OBJ = $(SOURCES:.c=.o)
 DOXYFILE = documentation/Doxyfile
 EXTRAFILES = COPYING $(wildcard shaders/*.?s images/*.png)

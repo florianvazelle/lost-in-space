@@ -1,7 +1,7 @@
 #ifndef _SATELLITE_H
 #define _SATELLITE_H
 
-#include "utils/structs/planet.h"
+#include "util/struct/planet.h"
 
 GLuint init_satellite(satellite);
 int update_satellite(satellite *);

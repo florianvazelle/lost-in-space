@@ -1,6 +1,6 @@
 #include <math.h>
 
-#include "vector3.h"
+#include "util/struct/vector3.h"
 
 vector3 zero() {
   vector3 r = {0, 0, 0};
