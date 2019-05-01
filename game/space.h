@@ -10,6 +10,7 @@ void apply_stars();
 
 int hit_player_satellite(entitie);
 GLuint hit_interact(sphere);
+void hit_shoot_satellite(vector3, vector3);
 
 void quit_space(void);
 

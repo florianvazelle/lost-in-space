@@ -90,6 +90,15 @@ GLuint hit_interact(sphere player) {
         return 0;
 }
 
+void hit_shoot_satellite(vector3 player, vector3 shoot){
+        for(int i = 0; i < size; i++) {
+                if(hit_line_sphere(player, shoot, s[i].body.data) == 1) {
+                        printf("PAN !!\n");
+                        explose(&s[i]);
+                }
+        }
+}
+
 void quit_space(){
         for(int i = 0; i < size; i++) {
                 quit_satellite(s[i]);

@@ -18,12 +18,12 @@ CPPFLAGS = -I.
 LDFLAGS = -lm -lassimp -lSDL2_image -lnanomsg
 
 # définition des fichiers et dossiers
-PROGNAME = exe
+PROGNAME = lostinspace
 VERSION = 1.0
 distdir = $(PROGNAME)-$(VERSION)
 HEADERS =
 UTILS = game/utils/convert.c game/utils/load_texture.c game/utils/merge.c game/utils/structs/sphere.c game/utils/structs/vector3.c
-GAME = game/config.c game/p2p.c game/landed.c game/satellite.c game/cockpit.c game/skybox.c game/crosshair.c game/space.c game/interact.c game/window.c
+GAME = game/config.c game/hypervelocity.c game/laser.c game/p2p.c game/landed.c game/satellite.c game/cockpit.c game/skybox.c game/crosshair.c game/space.c game/interact.c game/window.c
 LIBS = libs/assimp/assimp.c
 SOURCES = $(LIBS) $(UTILS) $(GAME)
 OBJ = $(SOURCES:.c=.o)

@@ -4,13 +4,16 @@
 #include <GL4D/gl4dp.h>
 
 /* ID des programmes shaders */
-GLuint _pBasicId, _pModelId;
+GLuint _pBasicId, _pModelId, _pStarfieldId;
 
 /* ID des figures geometriques */
-GLuint _plane, _sphere;
+GLuint _plane, _sphere, _cylinder;
+
+/* Shaders */
+int _light;
 
 /* Autres */
-int _light;
+enum type_keyboard { AZERTY, QWERTY } _keyboard;
 
 void init_config();
 

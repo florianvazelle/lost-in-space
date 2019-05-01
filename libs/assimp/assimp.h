@@ -13,13 +13,12 @@
 extern "C" {
 #endif
 
-  extern void assimpInit(const char * filename);
-  extern void assimpDrawScene(void);
-  extern void assimpQuit(void);
-  
+extern void assimpInit(const char *filename);
+extern void assimpDrawScene(void);
+extern void assimpQuit(void);
+
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-

@@ -1,5 +1,6 @@
 #include <GL4D/gl4dp.h>
 #include <SDL_image.h>
+#include <time.h>
 
 #include "satellite.h"
 #include "config.h"
@@ -51,6 +52,8 @@ void draw_satellite(satellite s) {
 
         glUniform1i(glGetUniformLocation(_pBasicId, "light"), _light);
         glUniform1i(glGetUniformLocation(_pBasicId, "type"), s.id);
+        if(s.id == 1)
+                glUniform1f(glGetUniformLocation(_pBasicId, "getTime"), (float)clock()/ 500000.0F);
         glUniform1f(glGetUniformLocation(_pBasicId, "explosion"), s.explosion);
         glUniform4fv(glGetUniformLocation(_pBasicId, "lumPos"), 1, _lumPos);
 

@@ -301,44 +301,194 @@ static void pmotion(int x, int y) {
   _ym = y;
 }
 
-void sdl2gl(float mouse[2]) {
-  mouse[0] = (mouse[0] / _wW) * 2.0f - 1.0f;
-  mouse[1] = 1.0f - (mouse[1] / _wH) * 2.0f;
-}
-
-static float rad2deg(float rad) { return rad * 180 / M_PI; }
-
 static void mousepressed(int button, int state, int mouse_x, int mouse_y) {
   if (button == 1 && state == 1) {
-    float mcoords[2] = {mouse_x, mouse_y};
-    sdl2gl(mcoords);
+    // float xGL = ((x + 0.5f) / _wW) * 2.0f - 1.0f;
+    // float yGL = (1.0f - ((y + 0.5f) / _wH) * 2.0f) - 0.5f;
 
-    GLfloat m[16], tmpp[16], tmpv[16], *gl4dm;
-    /* copie de la matrice de projection dans tmpp */
+    /*  float x2 = _cam.x + (sin(_cam.theta) * 100);
+       float y2 = _cam.y + (tan(angleY) * 100);
+       float z2 = _cam.z + (cos(_cam.theta) * 100);
+
+       float deltaX = x2 - _cam.x;
+       float deltaY = y2 - _cam.y;
+       float deltaZ = z2 - _cam.z;
+
+       float len = sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+       deltaX = deltaX / len;
+       deltaY = deltaY / len;
+       deltaZ = deltaZ / len;
+
+       printf("angleX: %.02lf - angleY: %.02lf - angleZ: %.02lf\n",
+       sin(_cam.theta), tan(angleY), cos(_cam.theta) );
+       //float x_an = (_cam.theta * 180.0 / M_PI) + 180.0;
+       //float y_an = angleY * 180.0 / M_PI;
+       //float z_an = (_cam.theta * 180.0 / M_PI);
+       shoot(_cam, x2, y2, z2, deltaX, deltaY, deltaZ);*/
+    /*GLfloat *matV, *matP, *_mat;
+       gl4duBindMatrix("viewMatrix");
+       matV = gl4duGetMatrixData();
+       gl4duBindMatrix("projectionMatrix");
+       matP = gl4duGetMatrixData();
+       MMAT4XMAT4(_mat, matP, matV);
+       MMAT4INVERSE(_mat);
+
+       GLfloat in[4], pos[4];
+       float winZ = 1.0f;
+
+       in[0] = ((x + 0.5f) / _wW) * 2.0f - 1.0f;
+       in[1] = (1.0f - ((y + 0.5f) / _wH) * 2.0f);
+       in[2] = 2.0f * winZ - 1.0f;
+       in[3] = 100.0f;
+
+       MMAT4XVEC4(pos, _mat, in);
+
+       pos[3] = 1.0 / pos[3];
+
+       pos[0] *= pos[3];
+       pos[1] *= pos[3];
+       pos[2] *= pos[3];
+
+       float x2 = _cam.x + pos[0];
+       float y2 = _cam.y - pos[1];
+       float z2 = _cam.z + pos[2];
+
+       float deltaX = x2 - _cam.x;
+       float deltaY = y2 - _cam.y;
+       float deltaZ = z2 - _cam.z;
+
+       float len = sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+       deltaX = deltaX / len;
+       deltaY = deltaY / len;
+       deltaZ = deltaZ / len;
+
+       printf("x1: %.02lf - y1: %.02lf - z1: %.02lf\n", _cam.x, _cam.y, _cam.z);
+       printf("x2: %.02lf - y2: %.02lf - z2: %.02lf\n", x2, y2, z2);
+       shoot(_cam, x2, y2, z2, deltaX, deltaY, deltaZ);*/
+
+    // vec2f mouse = (vec2f(mousePosition) / vec2f(windowSize)) * 2.0f - 1.0f;
+    //  float xGL = (x / _wW) * 2.0f - 1.0f;
+    // float yGL = 1.0f - ((y / _wH) * 2.0f);
+
+    // mat44 toWorld = (camera.projection * camera.transform).inverse();
+    //  GLfloat *matV, /**matM,*/ *matP, *_mat; //, *trans;
+    //  gl4duBindMatrix("modelMatrix");
+    // matM = gl4duGetMatrixData();
+    /*gl4duBindMatrix("viewMatrix");
+       matV = gl4duGetMatrixData();
+       //MMAT4XMAT4(trans, matV, matM);
+       gl4duBindMatrix("projectionMatrix");
+       matP = gl4duGetMatrixData();
+       MMAT4XMAT4(_mat, matP, matV);
+       MMAT4INVERSE(_mat);
+
+       float from[4], to[4];
+       //vec4f from = toWorld * vec4f(mouse, -1.0f, 1.0f);
+       float pos[4] = { 0.0f, -0.5f, 0.0f, 1.0f };
+       MMAT4XVEC4(from, _mat, pos);
+       //vec4f to = toWorld * vec4f(mouse, 1.0f, 1.0f);
+       float pos2[4] = { xGL, yGL, 100.0f, 1.0f };
+       MMAT4XVEC4(to, _mat, pos2);
+
+       //from /= from.w;
+       //to /= to.w;
+       for(int i = 0; i < 3; i++) {
+            from[i] /= from[3];
+            to[i] /= to[3];
+       }
+
+       float angle[3];
+       float deltaX = to[0] - from[0];
+       float deltaY = to[1] - from[1];
+       float deltaZ = to[2] - from[2];
+
+
+       from[0] = to[0] =_cam.x;
+       from[1] = to[1] = _cam.y;
+       from[2] = to[2] = _cam.z;
+
+       to[0] += (deltaX * 10.f);
+       to[1] += (deltaY * 10.f);
+       to[2] += (deltaZ * 10.f);
+
+       deltaX = to[0] - from[0];
+       deltaY = to[1] - from[1];
+       deltaZ = to[2] - from[2];
+
+       float len = sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+       angle[0] = deltaX / len;
+       angle[1] = deltaY / len;
+       angle[2] = deltaZ / len;
+
+       shootf(from, to, angle);*/
+    GLfloat m[16], tmpp[16], tmpm[16], *gl4dm;
+    GLfloat mcoords[] = {_cam.x, _cam.y, _cam.z, 1};
+
+    float x = (2.0f * mouse_x) / _wW - 1.0f;
+    float y = 1.0f - (2.0f * mouse_y) / _wH;
+    float z = 1.0f;
+
+    float ray_nds[3] = {x, y, z};
+    float ray_clip[4] = {x, y, -z, 100.0f};
+
     gl4duBindMatrix("projectionMatrix");
     gl4dm = gl4duGetMatrixData();
     memcpy(tmpp, gl4dm, sizeof tmpp);
-    /* copie de la matrice de view dans tmpv */
+    MMAT4INVERSE(tmpp);
+
+    float ray_eye[4];
+    MMAT4XVEC4(ray_eye, tmpp, ray_clip);
+    ray_eye[3] = 0.0f;
+
     gl4duBindMatrix("viewMatrix");
     gl4dm = gl4duGetMatrixData();
-    memcpy(tmpv, gl4dm, sizeof tmpv);
-    /* m est tmpp x tmpm */
-    MMAT4XMAT4(m, tmpp, tmpv);
-    MMAT4INVERSE(m);
+    memcpy(tmpm, gl4dm, sizeof tmpm);
+    MMAT4INVERSE(tmpm);
+
+    float ray_wor[4];
+    MMAT4XVEC4(ray_wor, tmpm, ray_eye);
+    MVEC4WEIGHT(ray_wor);
+
+    // float deltaX = ray_wor[0] - _cam.x;
+    // float deltaY = ray_wor[1] - _cam.y;
+    // float deltaZ = ray_wor[2] - _cam.z;
+
+    // float len = sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+    // deltaX = deltaX / len;
+    // deltaY = deltaY / len;
+    // deltaZ = deltaZ / len;
+    printf("Lazer Coord: %lf %lf %lf\n", ray_wor[0], ray_wor[1], ray_wor[2]);
+
+    // shoot(_cam, ray_wor[0], ray_wor[1], ray_wor[2], deltaX, deltaY,
+    // deltaZ);
+
+    /*float xGL = (mouse_x / _wW) * 2.0f - 1.0f;
+    float yGL = 1.0f - ((mouse_y / _wH) * 2.0f);
+
+    // mat44 toWorld = (camera.projection * camera.transform).inverse();
+    GLfloat _mat[16], m[16], tmpp[16], tmpm[16], tmpv[16], *gl4dm;
+    // gl4duBindMatrix("modelMatrix");
+    // gl4dm = gl4duGetMatrixData();
+    // memcpy(tmpm, gl4dm, sizeof tmpp);
+    gl4duBindMatrix("viewMatrix");
+    gl4dm = gl4duGetMatrixData();
+    memcpy(tmpv, gl4dm, sizeof tmpp);
+    // MMAT4XMAT4(m, tmpv, tmpm);
+    gl4duBindMatrix("projectionMatrix");
+    gl4dm = gl4duGetMatrixData();
+    memcpy(tmpp, gl4dm, sizeof tmpp);
+    MMAT4XMAT4(_mat, tmpp, tmpv);
+    MMAT4INVERSE(_mat);
 
     float from[4], to[4];
-    float pos[4] = {0.0f, -0.5f, -1.0f, 1.0f};
-    MMAT4XVEC4(from, m, pos);
-    float pos2[4] = {mcoords[0], mcoords[1], 1.0f, 1.0f};
-    MMAT4XVEC4(to, m, pos2);
+    // vec4f from = toWorld * vec4f(mouse, -1.0f, 1.0f);
+    float pos[4] = {0.0f, -0.5f, 0.0f, 1.0f};
+    MMAT4XVEC4(from, _mat, pos);
+    // vec4f to = toWorld * vec4f(mouse, 1.0f, 1.0f);
+    float pos2[4] = {xGL, yGL, 100.0f, 1.0f};
+    MMAT4XVEC4(to, _mat, pos2);
     MVEC4WEIGHT(to);
-
-    for (int i = 0; i < 3; i++) {
-      from[i] /= from[3];
-      to[i] /= to[3];
-    }
-
-    shootf(from, to);
+    printf("Lazer Coord: %lf %lf %lf\n", to[0], to[1], to[2]);*/
 
   } else if (button == 3 && state == 1) {
     hypervelocity = 100;
@@ -375,8 +525,8 @@ static void draw() {
 
       gl4duTranslatef(_cam.x - sin(_cam.theta), _cam.y - 0.18 - angleY,
                       _cam.z - cos(_cam.theta));
-      gl4duRotatef(rad2deg(_cam.theta) + 180.0, 0, 1, 0);
-      gl4duRotatef(rad2deg(angleY), 1, 0, 0);
+      gl4duRotatef((_cam.theta * 180.0 / M_PI) + 180.0, 0, 1, 0);
+      gl4duRotatef((angleY * 180.0 / M_PI), 1, 0, 0);
       gl4duRotatef(-10, 1, 0, 0);
       gl4duScalef(2.0 / 5.0, 2.0 / 5.0, 2.0 / 5.0);
 
@@ -396,13 +546,13 @@ static void draw() {
 
         gl4duTranslatef(_cam.x - sin(_cam.theta), _cam.y - 0.18 - angleY,
                         _cam.z - cos(_cam.theta));
-        gl4duRotatef(rad2deg(_cam.theta) + 180.0, 0, 1, 0);
-        gl4duRotatef(rad2deg(angleY), 1, 0, 0);
+        gl4duRotatef((_cam.theta * 180.0 / M_PI) + 180.0, 0, 1, 0);
+        gl4duRotatef((angleY * 180.0 / M_PI), 1, 0, 0);
         gl4duRotatef(-10, 1, 0, 0);
         gl4duScalef(2.0 / 5.0, 2.0 / 5.0, 2.0 / 5.0);
 
-        gl4duRotatef(-rad2deg(xClip), 0, 1, 0);
-        gl4duRotatef(-rad2deg(yClip), 1, 0, 0);
+        gl4duRotatef(-(xClip * 180.0 / M_PI), 0, 1, 0);
+        gl4duRotatef(-(yClip * 180.0 / M_PI), 1, 0, 0);
 
         apply_stars();
         glUniform3fv(glGetUniformLocation(_pModelId, "vector_view"), 1,
