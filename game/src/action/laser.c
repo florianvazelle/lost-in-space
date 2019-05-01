@@ -12,7 +12,7 @@ static int size = 0;
 void shootf(float from[4], float to[4]) {
   vector3 player = {from[0], from[1], from[2]};
   vector3 laser = {to[0], to[1], to[2]};
-  // hit_shoot_satellite(player, laser);
+  hit_shoot_satellite(player, laser);
   all_laser = realloc(all_laser, sizeof(double_vector3) * (size + 1));
   all_laser[size].player = player;
   all_laser[size].laser = laser;
@@ -40,7 +40,7 @@ void draw_shoot() {
   glActiveTexture(GL_TEXTURE0);
   glUniform1i(glGetUniformLocation(_pBasicId, "myTexture"), 0);
 
-  glUniform1i(glGetUniformLocation(_pBasicId, "light"), 1);
+  glUniform1i(glGetUniformLocation(_pBasicId, "light"), 0);
   glUniform1f(glGetUniformLocation(_pBasicId, "explosion"), 0);
 
   glBindTexture(GL_TEXTURE_2D, _laserId);

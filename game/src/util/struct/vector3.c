@@ -17,9 +17,7 @@ vector3 inertia() {
   return r;
 }
 
-float norme(vector3 a) {
-  return sqrt((a.x * a.x) * +(a.y * a.y) + (a.z * a.z));
-}
+float norme(vector3 a) { return sqrt((a.x * a.x) * (a.y * a.y) + (a.z * a.z)); }
 
 float distance(vector3 a, vector3 b) {
   return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) +
