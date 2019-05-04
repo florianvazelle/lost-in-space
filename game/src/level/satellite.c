@@ -9,8 +9,8 @@
 static float rot_earth = 0.0f;
 static GLfloat _lumPos[4] = {250, 160, 30, 1.0};
 
-GLuint init_satellite(satellite s) {
-  return load_2d_sprite_texture(s._texId, s.path_sprite);
+void init_satellite(satellite *s) {
+  load_2d_sprite_texture(&s->_texId, s->path_sprite);
 }
 
 static void ellipse(satellite *s) {
@@ -55,9 +55,14 @@ void draw_satellite(satellite s) {
 
   glUniform1i(glGetUniformLocation(_pBasicId, "light"), _light);
   glUniform1i(glGetUniformLocation(_pBasicId, "type"), s.id);
-  if (s.id == 1)
-    glUniform1f(glGetUniformLocation(_pBasicId, "getTime"),
-                (float)clock() / 500000.0F);
+  if (s.id == 1) {
+    static GLfloat t0 = -1;
+    GLfloat t;
+    if (t0 < 0.0f)
+      t0 = SDL_GetTicks();
+    t = (SDL_GetTicks() - t0) / 1000.0f;
+    glUniform1f(glGetUniformLocation(_pBasicId, "getTime"), t);
+  }
   glUniform1f(glGetUniformLocation(_pBasicId, "explosion"), s.explosion);
   glUniform4fv(glGetUniformLocation(_pBasicId, "lumPos"), 1, _lumPos);
 

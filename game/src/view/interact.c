@@ -7,8 +7,7 @@
 static GLuint _interactTexId = 0;
 
 void init_interact() {
-  _interactTexId =
-      load_2d_sprite_texture(_interactTexId, "assets/textures/entree.png");
+  load_2d_sprite_texture(&_interactTexId, "assets/textures/entree.png");
 }
 
 void draw_interact() {

@@ -3,7 +3,7 @@
 
 #include "util/struct/planet.h"
 
-GLuint init_satellite(satellite);
+void init_satellite(satellite *);
 int update_satellite(satellite *);
 void draw_satellite(satellite);
 void quit_satellite(satellite);

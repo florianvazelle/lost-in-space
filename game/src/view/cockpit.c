@@ -6,8 +6,7 @@
 static GLuint _cockpitTexId = 0;
 
 void init_cockpit() {
-  _cockpitTexId =
-      load_2d_sprite_texture(_cockpitTexId, "assets/textures/cockpit.png");
+  load_2d_sprite_texture(&_cockpitTexId, "assets/textures/cockpit.png");
 }
 
 void draw_cockpit() {

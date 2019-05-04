@@ -17,7 +17,7 @@ void init_skybox() {
       "assets/textures/skybox/rigth.png", "assets/textures/skybox/left.png",
       "assets/textures/skybox/top.png",   "assets/textures/skybox/bottom.png",
       "assets/textures/skybox/front.png", "assets/textures/skybox/back.png"};
-  _spaceTexId = load_cube_map_sprite_texture(_spaceTexId, skybox_path_sprite);
+  load_cube_map_sprite_texture(&_spaceTexId, skybox_path_sprite);
 
   GLfloat skyboxVertices[] = {
       -1.0f, 1.0f,  -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,  -1.0f, -1.0f,

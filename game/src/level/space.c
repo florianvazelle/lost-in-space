@@ -33,7 +33,7 @@ void init_space() {
   /* Initialisation des differents satellites
      (Chargement des textures) */
   for (int i = 0; i < size; i++) {
-    s[i]._texId = init_satellite(s[i]);
+    init_satellite(&s[i]);
   }
 }
 

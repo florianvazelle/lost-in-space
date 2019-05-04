@@ -3,7 +3,7 @@
 #include "config.h"
 #include "util/load_texture.h"
 
-static GLuint id = 0;
+static GLuint _texNoise = 0;
 
 static void draw_starfield(int hp) {
   glUseProgram(_pStarfieldId);
@@ -39,7 +39,7 @@ static void draw_starfield(int hp) {
   gl4duPopMatrix();
   gl4duBindMatrix("modelMatrix");
 
-  glBindTexture(GL_TEXTURE_2D, id);
+  glBindTexture(GL_TEXTURE_2D, _texNoise);
   gl4dgDraw(_plane);
 
   glDisable(GL_TEXTURE_2D);
@@ -50,8 +50,8 @@ static void draw_starfield(int hp) {
 }
 
 void animate_hypervelocity(int hp) {
-  if (id == 0) {
-    id = load_2d_sprite_texture(id, "assets/textures/white-noise.jpg");
+  if (_texNoise == 0) {
+    load_2d_sprite_texture(&_texNoise, "assets/textures/white-noise.jpg");
   }
   draw_starfield(hp);
 }

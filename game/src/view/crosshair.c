@@ -7,7 +7,7 @@ static GLuint _crosshairTexId = 0;
 
 void init_crosshair() {
   GLuint _crosshairTex[] = {RGB(255, 255, 255)};
-  _crosshairTexId = load_2d_texture(_crosshairTexId, _crosshairTex);
+  load_2d_texture(&_crosshairTexId, _crosshairTex);
 }
 
 static void part_crosshair(double rot, double posx, double posy) {
