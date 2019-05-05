@@ -5,12 +5,12 @@
 
 ## Dependencies
 
--  [GL4Dummies](https://www.github.com/noalien/gl4dummies)  
--  [nanomsg](https://www.github.com/nanomsg/nanomsg)  
+-   [GL4Dummies](https://www.github.com/noalien/gl4dummies)  
+-   [nanomsg](https://www.github.com/nanomsg/nanomsg)  
 
 ## Build Game
 
-```
-$> make
-$> ./lostinspace <NODE_ID>
+```shell
+make
+./lostinspace NODE_ID
 ```
