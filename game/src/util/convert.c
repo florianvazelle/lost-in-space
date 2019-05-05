@@ -49,11 +49,10 @@ static char **str_split(char *a_str, const char a_delim) {
 }
 
 char *struct2str(int id, vector3 dir) {
-        char buffer[10];
 
         /* get lenght of string required to hold struct values */
         size_t len = 0;
-        len = snprintf(buffer, len, "%d,%.02f,%.02f,%.02f", id, dir.x, dir.y, dir.z);
+        len = snprintf(NULL, len, "%d,%.02f,%.02f,%.02f", id, dir.x, dir.y, dir.z);
 
         /* allocate/validate string to hold all values (+1 to null-terminate) */
         char *apstr = calloc(1, sizeof *apstr * len + 1);
@@ -64,7 +63,8 @@ char *struct2str(int id, vector3 dir) {
         /* write/validate struct values to apstr */
         if (snprintf(apstr, len + 1, "%d,%.02f,%.02f,%.02f", id, dir.x, dir.y, dir.z) > len + 1) {
                 fprintf(stderr, "%s() error: snprintf returned truncated result.\n", __func__);
-                return '\0';
+                free(apstr);
+                return NULL;
         }
 
         return apstr;
