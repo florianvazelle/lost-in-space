@@ -9,11 +9,15 @@ GLuint _pBasicId, _pModelId, _pStarfieldId;
 /* ID des figures geometriques */
 GLuint _plane, _sphere, _cylinder;
 
+/* Taille de l'ecran */
+int _wW, _wH;
+
 /* Shaders */
 int _light;
 
 /* Autres */
 enum type_keyboard { AZERTY, QWERTY } _keyboard;
+enum type_state { MENU, PLAY, SETTINGS, CREDITS } _state;
 
 void init_config();
 

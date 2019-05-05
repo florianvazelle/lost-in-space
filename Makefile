@@ -15,7 +15,7 @@ CP = rsync -R
 # déclaration des options du compilateur
 CFLAGS = -Wall -O3 -I./game/include
 CPPFLAGS = -I.
-LDFLAGS = -lm -lassimp -lSDL2_image -lnanomsg
+LDFLAGS = -lm -lassimp -lSDL2_image -lSDL2_ttf -lnanomsg
 
 # définition des fichiers et dossiers
 PROGNAME = lostinspace
@@ -24,13 +24,14 @@ distdir = $(PROGNAME)-$(VERSION)
 HEADERS =
 ACTION = game/src/action/hypervelocity.c game/src/action/laser.c
 LEVEL = game/src/level/landed.c game/src/level/satellite.c game/src/level/space.c
+MENU = game/src/menu/launcher.c game/src/menu/button.c
 NETWORK = game/src/network/p2p.c
-
 UTIL = game/src/util/convert.c game/src/util/load_texture.c game/src/util/merge.c \
-			 game/src/util/struct/sphere.c game/src/util/struct/vector3.c
+			 game/src/util/struct/sphere.c game/src/util/struct/vector3.c \
+			 game/src/util/load_text.c
 VIEW = game/src/view/cockpit.c game/src/view/crosshair.c game/src/view/interact.c \
 			 game/src/view/skybox.c
-SRC = $(ACTION) $(LEVEL) $(NETWORK) $(UTIL) $(VIEW) game/src/config.c
+SRC = $(ACTION) $(LEVEL) $(MENU) $(NETWORK) $(UTIL) $(VIEW) game/src/config.c
 GAME = $(SRC) game/window.c
 LIB = lib/assimp/assimp.c
 SOURCES = $(LIB) $(GAME)

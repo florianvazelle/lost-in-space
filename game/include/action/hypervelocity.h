@@ -1,2 +1,2 @@
 
-void animate_hypervelocity(int);
+void animate_hypervelocity();
