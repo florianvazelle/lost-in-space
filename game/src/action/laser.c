@@ -13,7 +13,12 @@ void shootf(float from[4], float to[4]) {
   vector3 player = {from[0], from[1], from[2]};
   vector3 laser = {to[0], to[1], to[2]};
   hit_shoot_satellite(player, laser);
-  all_laser = realloc(all_laser, sizeof(double_vector3) * (size + 1));
+  double_vector3 *tmp = realloc(all_laser, sizeof(double_vector3) * (size + 1));
+  if (NULL == tmp) {
+    free(tmp);
+  } else {
+    all_laser = tmp;
+  }
   all_laser[size].player = player;
   all_laser[size].laser = laser;
   size++;

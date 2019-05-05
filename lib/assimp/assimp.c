@@ -241,15 +241,12 @@ static void apply_material(const struct aiMaterial *mtl) {
 static void sceneMkVAOs(const struct aiScene *sc, const struct aiNode* nd, GLuint * ivao) {
         int i, j, comp;
         unsigned int n = 0;
-        static int temp = 0;
-
-        temp++;
 
         for (; n < nd->mNumMeshes; ++n) {
                 GLfloat * vertices = NULL;
                 GLuint  * indices  = NULL;
                 const struct aiMesh* mesh = sc->mMeshes[nd->mMeshes[n]];
-                comp  = mesh->mVertices ? 3 : 0;
+                comp = mesh->mVertices ? 3 : 0;
                 comp += mesh->mNormals ? 3 : 0;
                 comp += mesh->mTextureCoords[0] ? 2 : 0;
                 if(!comp) continue;
