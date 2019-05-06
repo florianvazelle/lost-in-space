@@ -18,6 +18,5 @@ void init_config() {
 
         _light = 1;
 
-        _keyboard = QWERTY;
         _state = MENU;
 }

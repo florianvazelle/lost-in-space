@@ -26,7 +26,6 @@ static float xClip, yClip;
 static GLfloat angleY;
 static int view = 0;
 
-static int hypervelocity = 0;
 static int on_spaceship = 1;
 static GLuint interact = 0;
 
@@ -112,8 +111,7 @@ static void resize(int w, int h) {
         glViewport(0, 0, _wW, _wH);
         gl4duBindMatrix("projectionMatrix");
         gl4duLoadIdentityf();
-        gl4duFrustumf(-0.005, 0.005, -0.005 * _wH / _wW, 0.005 * _wH / _wW, 0.01,
-                      1000.0);
+        gl4duFrustumf(-0.005, 0.005, -0.005 * _wH / _wW, 0.005 * _wH / _wW, 0.01, 1000.0);
 }
 
 static void idle(void) {
@@ -172,39 +170,8 @@ static void idle(void) {
 }
 
 static void keydown(int keycode) {
-        if (_keyboard == QWERTY) {
-                switch (keycode) {
-                case 'a':
-                        _keys[KLEFT] = 1;
-                        break;
-                case 'd':
-                        _keys[KRIGHT] = 1;
-                        break;
-                case 'w':
-                        _keys[KUP] = 1;
-                        break;
-                case 's':
-                        _keys[KDOWN] = 1;
-                        break;
-                }
-        } else if (_keyboard == AZERTY) {
-                switch (keycode) {
-                case 'd':
-                        _keys[KLEFT] = 1;
-                        break;
-                case 'q':
-                        _keys[KRIGHT] = 1;
-                        break;
-                case 'z':
-                        _keys[KUP] = 1;
-                        break;
-                case 's':
-                        _keys[KDOWN] = 1;
-                        break;
-                }
-        }
-
         switch (keycode) {
+        /* Deplacement */
         case GL4DK_LEFT:
                 _keys[KLEFT] = 1;
                 break;
@@ -217,10 +184,12 @@ static void keydown(int keycode) {
         case GL4DK_DOWN:
                 _keys[KDOWN] = 1;
                 break;
+        /* Acceder au menu */
         case GL4DK_ESCAPE:
                 _state = MENU;
                 reinit_credit();
                 break;
+        /* Afficher les textures sans traitement par les shaders */
         case 'l':
                 _light = !_light;
                 break;
@@ -245,38 +214,6 @@ static void keydown(int keycode) {
 }
 
 static void keyup(int keycode) {
-        if (_keyboard == QWERTY) {
-                switch (keycode) {
-                case 'a':
-                        _keys[KLEFT] = 0;
-                        break;
-                case 'd':
-                        _keys[KRIGHT] = 0;
-                        break;
-                case 'w':
-                        _keys[KUP] = 0;
-                        break;
-                case 's':
-                        _keys[KDOWN] = 0;
-                        break;
-                }
-        } else if (_keyboard == AZERTY) {
-                switch (keycode) {
-                case 'q':
-                        _keys[KLEFT] = 0;
-                        break;
-                case 'd':
-                        _keys[KRIGHT] = 0;
-                        break;
-                case 'z':
-                        _keys[KUP] = 0;
-                        break;
-                case 's':
-                        _keys[KDOWN] = 0;
-                        break;
-                }
-        }
-
         switch (keycode) {
         case GL4DK_LEFT:
                 _keys[KLEFT] = 0;
@@ -303,6 +240,14 @@ static void pmotion(int x, int y) {
         _ym = y;
 }
 
+static void send_mess(char* message){
+        /* Envoye du message */
+        int sz_n = strlen(message) + 1; // '\0' too
+        if (nn_send(sock, message, sz_n, NN_DONTWAIT) < 0) {
+                fatal("nn_send");
+        }
+}
+
 static void mousepressed(int button, int state, int mouse_x, int mouse_y) {
         if(_state == MENU) {
                 mousepressed_launcher(button, state, mouse_x, mouse_y);
@@ -327,6 +272,7 @@ static void mousepressed(int button, int state, int mouse_x, int mouse_y) {
                         float from[4], to[4];
                         float pos[4] = {0.0f, -0.5f, -1.0f, 1.0f};
                         MMAT4XVEC4(from, m, pos);
+
                         float pos2[4] = {mcoords[0], mcoords[1], 1.0f, 1.0f};
                         MMAT4XVEC4(to, m, pos2);
                         MVEC4WEIGHT(to);
@@ -338,8 +284,9 @@ static void mousepressed(int button, int state, int mouse_x, int mouse_y) {
 
                         shootf(from, to);
 
-                } else if (button == 3 && state == 1) {
-                        hypervelocity = 100;
+                        /* On envoie le tire aux autres joueurs */
+                        send_mess(shoot2str(2, from, to));
+
                 }
         }
 }
@@ -372,7 +319,10 @@ static void draw() {
 
                         draw_skybox(_cam.x, _cam.y, _cam.z);
                         draw_space(_light);
-                        if (hypervelocity > 0) {
+
+                        draw_shoot();
+
+                        if (view == 0) {
                                 glUseProgram(_pModelId);
                                 gl4duBindMatrix("modelMatrix");
                                 gl4duLoadIdentityf();
@@ -384,40 +334,18 @@ static void draw() {
                                 gl4duRotatef(-10, 1, 0, 0);
                                 gl4duScalef(2.0 / 5.0, 2.0 / 5.0, 2.0 / 5.0);
 
-                                glUniform3fv(glGetUniformLocation(_pModelId, "vector_view"), 1,
-                                             vector_view);
+                                gl4duRotatef(-rad2deg(xClip), 0, 1, 0);
+                                gl4duRotatef(-rad2deg(yClip), 1, 0, 0);
+
+                                apply_stars();
+                                glUniform3fv(glGetUniformLocation(_pModelId, "vector_view"), 1, vector_view);
                                 assimpDrawScene();
 
-                                animate_hypervelocity();
-                                hypervelocity--;
-                        } else if (hypervelocity == 0) {
-                                draw_shoot();
-
-                                if (view == 0) {
-                                        glUseProgram(_pModelId);
-                                        gl4duBindMatrix("modelMatrix");
-                                        gl4duLoadIdentityf();
-
-                                        gl4duTranslatef(_cam.x - sin(_cam.theta), _cam.y - 0.18 - angleY,
-                                                        _cam.z - cos(_cam.theta));
-                                        gl4duRotatef(rad2deg(_cam.theta) + 180.0, 0, 1, 0);
-                                        gl4duRotatef(rad2deg(angleY), 1, 0, 0);
-                                        gl4duRotatef(-10, 1, 0, 0);
-                                        gl4duScalef(2.0 / 5.0, 2.0 / 5.0, 2.0 / 5.0);
-
-                                        gl4duRotatef(-rad2deg(xClip), 0, 1, 0);
-                                        gl4duRotatef(-rad2deg(yClip), 1, 0, 0);
-
-                                        apply_stars();
-                                        glUniform3fv(glGetUniformLocation(_pModelId, "vector_view"), 1,
-                                                     vector_view);
-                                        assimpDrawScene();
-
-                                        draw_crosshair(xClip, yClip);
-                                } else if (view == 1) {
-                                        draw_cockpit();
-                                }
+                                draw_crosshair(xClip, yClip);
+                        } else if (view == 1) {
+                                draw_cockpit();
                         }
+
                 }
                 /* Affichage sur un satellite */
                 else {
@@ -441,37 +369,44 @@ static void draw() {
                          **/
 
                         /* Transforme les coordonnees du joueur en message a envoye */
-                        vector3 coordinates = {_cam.x, _cam.y, _cam.z};
-                        char *message = struct2str(1, coordinates);
-
-                        /* Envoye du message */
-                        int sz_n = strlen(message) + 1; // '\0' too
-                        if (nn_send(sock, message, sz_n, NN_DONTWAIT) < 0) {
-                                fatal("nn_send");
-                        }
+                        float coordinates[3] = {_cam.x, _cam.y, _cam.z};
+                        send_mess(struct2str(1, coordinates));
 
                         /* Reception des messages */
                         char *buf = NULL;
                         int recv = nn_recv(sock, &buf, NN_MSG, NN_DONTWAIT);
                         if (recv >= 0) {
                                 /* Traduction du message en coordonnees */
-                                vector3 client = str2stuct(buf);
+                                float client[7];
+                                str2stuct(buf, client);
                                 nn_freemsg(buf);
 
-                                /* Affichage du joueur */
-                                glUseProgram(_pModelId);
-                                gl4duBindMatrix("modelMatrix");
-                                gl4duLoadIdentityf();
+                                /* Joueur */
+                                if(client[0] == 1) {
+                                        /* Affichage du joueur */
+                                        glUseProgram(_pModelId);
+                                        gl4duBindMatrix("modelMatrix");
+                                        gl4duLoadIdentityf();
 
-                                gl4duTranslatef(client.x, client.y, client.z);
-                                gl4duScalef(2.0 / 5.0, 2.0 / 5.0, 2.0 / 5.0);
+                                        gl4duTranslatef(client[1], client[2], client[3]);
+                                        gl4duScalef(2.0 / 5.0, 2.0 / 5.0, 2.0 / 5.0);
 
-                                apply_stars();
-                                glUniform3fv(glGetUniformLocation(_pModelId, "vector_view"), 1,
-                                             vector_view);
-                                assimpDrawScene();
+                                        apply_stars();
+                                        glUniform3fv(glGetUniformLocation(_pModelId, "vector_view"), 1, vector_view);
+                                        assimpDrawScene();
 
-                                glUseProgram(0);
+                                        glUseProgram(0);
+                                }
+                                /* Laser */
+                                else if(client[0] == 2) {
+                                        float from[4] = {client[1], client[2], client[3], 1.0f};
+                                        float to[4] = {client[4], client[5], client[6], 1.0f};
+                                        shootf(from, to);
+                                }
+                                /* Explosion */
+                                else if(client[0] == 3) {
+                                        //explode();
+                                }
                         }
                 }
 
@@ -482,6 +417,8 @@ static void draw() {
 
 static void quit(void) {
         assimpQuit();
+        quit_cockpit();
+        quit_interact();
         quit_crosshair();
         quit_space();
         quit_skybox();

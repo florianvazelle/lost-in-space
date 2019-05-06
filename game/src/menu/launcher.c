@@ -21,5 +21,5 @@ void mousepressed_launcher(int button, int state, int x, int y) {
 
 void draw_launcher() {
         animate_hypervelocity();
-        DrawButton();
+        draw_button();
 }

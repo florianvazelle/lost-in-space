@@ -19,7 +19,6 @@ int _xm, _ym;
 int _light;
 
 /* Autres */
-enum type_keyboard { AZERTY, QWERTY } _keyboard;
 enum type_state { MENU, PLAY, SETTINGS, CREDITS } _state;
 
 void init_config();

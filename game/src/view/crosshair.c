@@ -1,63 +1,36 @@
 #include <GL4D/gl4dp.h>
 
 #include "config.h"
+#include "util/template.h"
 #include "util/load_texture.h"
 
 static GLuint _crosshairTexId = 0;
 
 void init_crosshair() {
-  GLuint _crosshairTex[] = {RGB(255, 255, 255)};
-  load_2d_texture(&_crosshairTexId, _crosshairTex);
-}
-
-static void part_crosshair(double rot, double posx, double posy) {
-  gl4duBindMatrix("projectionMatrix");
-  gl4duPushMatrix();
-  {
-    gl4duLoadIdentityf();
-    gl4duBindMatrix("modelMatrix");
-    gl4duPushMatrix();
-    {
-      gl4duLoadIdentityf();
-      gl4duTranslatef(posx, posy, 0.0);
-      gl4duRotatef(rot, 0, 0, 1);
-      gl4duScalef(0.01 / 5.0, 0.2 / 5.0, 0.2 / 5.0);
-      gl4duBindMatrix("viewMatrix");
-      gl4duPushMatrix();
-      {
-        gl4duLoadIdentityf();
-        gl4duSendMatrices();
-      }
-      gl4duPopMatrix();
-      gl4duBindMatrix("modelMatrix");
-    }
-    gl4duPopMatrix();
-    gl4duBindMatrix("projectionMatrix");
-  }
-  gl4duPopMatrix();
-  gl4duBindMatrix("modelMatrix");
-
-  gl4dgDraw(_plane);
+        GLuint _crosshairTex[] = {RGB(255, 255, 255)};
+        load_2d_texture(&_crosshairTexId, _crosshairTex);
 }
 
 void draw_crosshair(float x, float y) {
-  glUseProgram(_pBasicId);
-  glUniform1i(glGetUniformLocation(_pBasicId, "light"), 0);
-  glUniform1f(glGetUniformLocation(_pBasicId, "explosion"), 0);
+        float trans[3] = {-0.1 + x, 0.05 + y, 0.0};
+        float rotat[4] = {60, 0, 0, 1};
+        float scale[3] = {0.01 / 5.0, 0.2 / 5.0, 0.2 / 5.0};
+        draw_template(_crosshairTexId, trans, rotat, scale);
 
-  glDisable(GL_CULL_FACE);
-  glDisable(GL_DEPTH_TEST);
-  glBindTexture(GL_TEXTURE_2D, _crosshairTexId);
+        trans[1] = -0.05 + y;
+        rotat[0] = 120;
+        draw_template(_crosshairTexId, trans, rotat, scale);
 
-  part_crosshair(60.0, -0.1 + x, 0.05 + y);
-  part_crosshair(120.0, -0.1 + x, -0.05 + y);
-  part_crosshair(-60.0, 0.1 + x, 0.05 + y);
-  part_crosshair(-120.0, 0.1 + x, -0.05 + y);
+        trans[0] = 0.1 + x;
+        rotat[0] = -120;
+        draw_template(_crosshairTexId, trans, rotat, scale);
 
-  glUseProgram(0);
+        trans[1] = 0.05 + y;
+        rotat[0] = -60;
+        draw_template(_crosshairTexId, trans, rotat, scale);
 }
 
 void quit_crosshair() {
-  if (_crosshairTexId)
-    glDeleteTextures(1, &_crosshairTexId);
+        if (_crosshairTexId)
+                glDeleteTextures(1, &_crosshairTexId);
 }
