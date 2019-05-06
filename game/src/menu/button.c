@@ -4,6 +4,8 @@
 #include <SDL_image.h>
 
 #include "config.h"
+#include "util/struct/vector3.h"
+#include "util/convert.h"
 #include "util/load_text.h"
 
 typedef void (*ButtonCallback)();
@@ -63,7 +65,6 @@ void TestAll(float xpress, float ypress) {
         }
 }
 
-
 void init_button() {
         for (int i = 0; i < size; i++) {
                 initText(&MyButton[i].textId, MyButton[i].label);
@@ -84,6 +85,15 @@ void DrawButton() {
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, currentButton.textId);
                 glUniform1i(glGetUniformLocation(_pTextId, "myTexture"), 0);
+
+                float mouse[2] = {_xm, _ym};
+                sdl2gl(mouse);
+
+                if (i == 0 || ButtonClickTest(&currentButton, mouse[0], mouse[1]) == 1) {
+                        glUniform1i(glGetUniformLocation(_pTextId, "highlight"), 1);
+                } else {
+                        glUniform1i(glGetUniformLocation(_pTextId, "highlight"), 0);
+                }
 
                 gl4duBindMatrix("projectionMatrix");
                 gl4duPushMatrix(); {

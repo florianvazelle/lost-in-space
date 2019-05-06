@@ -13,9 +13,11 @@ void init_config() {
         _wW = 800;
         _wH = 600;
 
-        _state = MENU;
+        _xm = 400;
+        _ym = 300;
 
         _light = 1;
 
         _keyboard = QWERTY;
+        _state = MENU;
 }

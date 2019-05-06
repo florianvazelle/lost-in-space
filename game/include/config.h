@@ -12,6 +12,9 @@ GLuint _plane, _sphere, _cylinder;
 /* Taille de l'ecran */
 int _wW, _wH;
 
+/* Position de la souris */
+int _xm, _ym;
+
 /* Shaders */
 int _light;
 

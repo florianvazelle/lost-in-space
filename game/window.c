@@ -22,8 +22,6 @@
 #include "util/convert.h"
 #include "util/load_texture.h"
 
-static int _xm = 400, _ym = 300;
-
 static float xClip, yClip;
 static GLfloat angleY;
 static int view = 0;
@@ -303,15 +301,6 @@ static void keyup(int keycode) {
 static void pmotion(int x, int y) {
         _xm = x;
         _ym = y;
-}
-
-void sdl2gl(float mouse[2]) {
-        mouse[0] = (mouse[0] / _wW) * 2.0f - 1.0f;
-        mouse[1] = 1.0f - (mouse[1] / _wH) * 2.0f;
-}
-
-static float rad2deg(float rad) {
-        return rad * 180 / M_PI;
 }
 
 static void mousepressed(int button, int state, int mouse_x, int mouse_y) {

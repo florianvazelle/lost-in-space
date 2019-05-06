@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "config.h"
 #include "util/struct/vector3.h"
 
 static char **str_split(char *a_str, const char a_delim) {
@@ -74,4 +75,15 @@ vector3 str2stuct(char *str) {
         char **res = str_split(str, ',');
         vector3 r = {atof(res[1]), atof(res[2]), atof(res[3])};
         return r;
+}
+
+/* Petit plus */
+
+void sdl2gl(float mouse[2]) {
+        mouse[0] = (mouse[0] / _wW) * 2.0f - 1.0f;
+        mouse[1] = 1.0f - (mouse[1] / _wH) * 2.0f;
+}
+
+float rad2deg(float rad) {
+        return rad * 180 / M_PI;
 }
