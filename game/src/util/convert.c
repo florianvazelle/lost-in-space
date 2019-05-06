@@ -49,28 +49,6 @@ static char **str_split(char *a_str, const char a_delim) {
         return result;
 }
 
-char *struct2str(int id, float dir[3]) {
-
-        /* get lenght of string required to hold struct values */
-        size_t len = 0;
-        len = snprintf(NULL, len, "%d,%.02f,%.02f,%.02f", id, dir[0], dir[1], dir[2]);
-
-        /* allocate/validate string to hold all values (+1 to null-terminate) */
-        char *apstr = calloc(1, sizeof *apstr * len + 1);
-        if (!apstr) {
-                fprintf(stderr, "%s() error: virtual memory allocation failed.\n", __func__);
-        }
-
-        /* write/validate struct values to apstr */
-        if (snprintf(apstr, len + 1, "%d,%.02f,%.02f,%.02f", id, dir[0], dir[1], dir[2]) > len + 1) {
-                fprintf(stderr, "%s() error: snprintf returned truncated result.\n", __func__);
-                free(apstr);
-                return NULL;
-        }
-
-        return apstr;
-}
-
 void str2stuct(char *str, float* r) {
         char **res = str_split(str, ',');
         int id = atoi(res[0]);
@@ -82,22 +60,35 @@ void str2stuct(char *str, float* r) {
                 r[1] = atof(res[1]); r[2] = atof(res[2]); r[3] = atof(res[3]);
                 r[4] = atof(res[4]); r[5] = atof(res[5]); r[6] = atof(res[6]);
         }
+        free(res);
 }
 
-char *shoot2str(int id, float from[3], float to[3]) {
+char *struct2str(int id, float from[3], float to[3]) {
+        char buff[0];
 
         /* get lenght of string required to hold struct values */
-        size_t len = 0;
-        len = snprintf(NULL, len, "%d,%.02f,%.02f,%.02f,%.02f,%.02f,%.02f", id, from[0], from[1], from[2], to[0], to[1], to[2]);
+        int len1 = 0;
+        if(id == 1) {
+                len1 = snprintf(buff, len1, "%d,%.02f,%.02f,%.02f", id, from[0], from[1], from[2]);
+        } else if(id == 2) {
+                len1 = snprintf(buff, len1, "%d,%.02f,%.02f,%.02f,%.02f,%.02f,%.02f", id, from[0], from[1], from[2], to[0], to[1], to[2]);
+        }
 
         /* allocate/validate string to hold all values (+1 to null-terminate) */
-        char *apstr = calloc(1, sizeof *apstr * len + 1);
+        char *apstr = calloc(1, sizeof *apstr * len1 + 1);
         if (!apstr) {
                 fprintf(stderr, "%s() error: virtual memory allocation failed.\n", __func__);
         }
 
         /* write/validate struct values to apstr */
-        if (snprintf(apstr, len + 1, "%d,%.02f,%.02f,%.02f,%.02f,%.02f,%.02f", id, from[0], from[1], from[2], to[0], to[1], to[2]) > len + 1) {
+        int len2 = 0;
+        if(id == 1) {
+                len2 = snprintf(apstr, len1 + 1, "%d,%.02f,%.02f,%.02f", id, from[0], from[1], from[2]);
+        } else if(id == 2) {
+                len2 = snprintf(apstr, len1 + 1, "%d,%.02f,%.02f,%.02f,%.02f,%.02f,%.02f", id, from[0], from[1], from[2], to[0], to[1], to[2]);
+        }
+
+        if (len2 > len1 + 1) {
                 fprintf(stderr, "%s() error: snprintf returned truncated result.\n", __func__);
                 free(apstr);
                 return NULL;

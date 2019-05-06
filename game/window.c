@@ -285,7 +285,7 @@ static void mousepressed(int button, int state, int mouse_x, int mouse_y) {
                         shootf(from, to);
 
                         /* On envoie le tire aux autres joueurs */
-                        send_mess(shoot2str(2, from, to));
+                        send_mess(struct2str(2, from, to));
 
                 }
         }
@@ -370,7 +370,8 @@ static void draw() {
 
                         /* Transforme les coordonnees du joueur en message a envoye */
                         float coordinates[3] = {_cam.x, _cam.y, _cam.z};
-                        send_mess(struct2str(1, coordinates));
+                        float tmp[3] = {0, 0, 0};
+                        send_mess(struct2str(1, coordinates, tmp));
 
                         /* Reception des messages */
                         char *buf = NULL;
