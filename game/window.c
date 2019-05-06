@@ -8,6 +8,7 @@
 #include "view/crosshair.h"
 #include "view/interact.h"
 #include "view/skybox.h"
+#include "view/credit.h"
 
 #include "level/landed.h"
 #include "level/space.h"
@@ -96,6 +97,7 @@ static void initGL() {
 
 static void initData(void) {
         init_launcher();
+        init_credit();
 
         init_crosshair();
         init_space();
@@ -219,6 +221,7 @@ static void keydown(int keycode) {
                 break;
         case GL4DK_ESCAPE:
                 _state = MENU;
+                reinit_credit();
                 break;
         case 'l':
                 _light = !_light;
@@ -358,6 +361,8 @@ static void mousepressed(int button, int state, int mouse_x, int mouse_y) {
 static void draw() {
         if(_state == MENU) {
                 draw_launcher();
+        } else if(_state == CREDITS) {
+                draw_credit();
         } else {
                 float vector_view[3] = {_cam.x, _cam.y, _cam.z - 1};
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

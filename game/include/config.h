@@ -4,7 +4,7 @@
 #include <GL4D/gl4dp.h>
 
 /* ID des programmes shaders */
-GLuint _pBasicId, _pModelId, _pStarfieldId;
+GLuint _pBasicId, _pModelId, _pStarfieldId, _pTextId;
 
 /* ID des figures geometriques */
 GLuint _plane, _sphere, _cylinder;

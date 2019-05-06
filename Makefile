@@ -30,7 +30,7 @@ UTIL = game/src/util/convert.c game/src/util/load_texture.c game/src/util/merge.
 			 game/src/util/struct/sphere.c game/src/util/struct/vector3.c \
 			 game/src/util/load_text.c
 VIEW = game/src/view/cockpit.c game/src/view/crosshair.c game/src/view/interact.c \
-			 game/src/view/skybox.c
+			 game/src/view/skybox.c game/src/view/credit.c
 SRC = $(ACTION) $(LEVEL) $(MENU) $(NETWORK) $(UTIL) $(VIEW) game/src/config.c
 GAME = $(SRC) game/window.c
 LIB = lib/assimp/assimp.c
