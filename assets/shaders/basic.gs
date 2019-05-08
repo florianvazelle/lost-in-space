@@ -33,7 +33,7 @@ void main(void) {
       if (explosion > 0.0) {
         vec3 v_pos =
             gl_in[i].gl_Position.xyz +
-            v_normal * (explosion * 5) * rand(gl_in[0].gl_Position.xyz);
+            v_normal * (explosion * 100.) * rand(gl_in[0].gl_Position.xyz);
         gl_Position = vec4(v_pos, gl_in[i].gl_Position.w);
       } else {
         gl_Position = gl_in[i].gl_Position;

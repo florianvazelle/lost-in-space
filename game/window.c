@@ -300,7 +300,7 @@ static void draw() {
         } else if(_state == CREDITS) {
                 draw_credit();
         } else {
-                float vector_view[3] = {_cam.x, _cam.y, _cam.z - 1};
+                float vector_view[3] = {-sin(_cam.theta), -angleY, -cos(_cam.theta)};
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
                 /* Affichage dans l'espace */
@@ -324,6 +324,7 @@ static void draw() {
 
                         if (view == 0) {
                                 glUseProgram(_pModelId);
+
                                 gl4duBindMatrix("modelMatrix");
                                 gl4duLoadIdentityf();
 
@@ -337,9 +338,10 @@ static void draw() {
                                 gl4duRotatef(-rad2deg(xClip), 0, 1, 0);
                                 gl4duRotatef(-rad2deg(yClip), 1, 0, 0);
 
-                                apply_stars();
+                                apply_stars(_pModelId);
                                 glUniform3fv(glGetUniformLocation(_pModelId, "vector_view"), 1, vector_view);
                                 assimpDrawScene();
+                                glUseProgram(0);
 
                                 draw_crosshair(xClip, yClip);
                         } else if (view == 1) {
@@ -392,7 +394,7 @@ static void draw() {
                                         gl4duTranslatef(client[1], client[2], client[3]);
                                         gl4duScalef(2.0 / 5.0, 2.0 / 5.0, 2.0 / 5.0);
 
-                                        apply_stars();
+                                        apply_stars(_pModelId);
                                         glUniform3fv(glGetUniformLocation(_pModelId, "vector_view"), 1, vector_view);
                                         assimpDrawScene();
 

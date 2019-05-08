@@ -3,7 +3,10 @@
 void draw_template(GLuint _texId, float trans[3], float rotat[4], float scale[3]){
         glUseProgram(_pBasicId);
 
+        glUniform1i(glGetUniformLocation(_pBasicId, "myTexture"), 0);
+
         glUniform1i(glGetUniformLocation(_pBasicId, "light"), 0);
+        glUniform1f(glGetUniformLocation(_pBasicId, "explosion"), 0);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

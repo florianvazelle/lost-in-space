@@ -5,9 +5,6 @@ uniform vec3 vector_view;
 
 uniform sampler2D myTexture;
 uniform int hasTexture;
-uniform vec4 diffuse_color;
-uniform vec4 specular_color;
-uniform vec4 ambient_color;
 
 in vec2 vsoTexCoord;
 in vec3 vsoNormal;
@@ -16,6 +13,10 @@ in vec4 vsoModPosition;
 out vec4 fragColor;
 
 void main(void) {
+  const vec4 diffuse_color = vec4(0.5, 0.5, 0.45, 0.5);
+  const vec4 ambient_color = vec4(0.4, 0.4, 0.5, 0.5);
+  const vec4 specular_color = vec4(0.5, 0.5, 0.375, 0.5);
+
   vec3 lum = normalize(vsoModPosition.xyz - lumPos.xyz);
   float diffuse = clamp(dot(normalize(vsoNormal), -lum), 0.1, 1.0);
   vec3 lightDirection = vec3(lumPos - vsoModPosition);

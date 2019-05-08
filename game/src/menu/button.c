@@ -112,6 +112,7 @@ void draw_button() {
                 gl4dgDraw(_plane);
         }
 
+        glDisable(GL_TEXTURE_2D);
         glBlendFunc(GL_ONE, GL_ZERO);
         glDisable(GL_BLEND);
         glBindTexture(GL_TEXTURE_2D, 0);

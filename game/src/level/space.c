@@ -2,10 +2,12 @@
 #include "level/satellite.h"
 #include "util/merge.h"
 
-static satellite s[4] = {{1, {{250, 160, 30, 100}, {0, 0, 0}}, "assets/textures/star.jpg", 0, 0, 0.0},
-                         {2, {{150, -124, 170, 78}, {0, 0, 0}}, "assets/textures/terre.png", 0, 0, 0.0},
-                         {3, {{141, 78, 60, 12}, {0, 0, 0}}, "assets/textures/asteroid.jpg", 0, 0, 0.0},
-                         {3, {{91, 40, 230, 5}, {0, 0, 0}}, "assets/textures/asteroid.jpg", 0, 0, 0.0}};
+static satellite s[4] = {
+        {1, {{250, 160, 30, 100}, {0, 0, 0}}, "assets/textures/star.jpg", 0, 0, 0.0},
+        {2, {{150, -124, 170, 78}, {0, 0, 0}}, "assets/textures/terre.png", 0, 0, 0.0},
+        {3, {{141, 78, 60, 12}, {0, 0, 0}}, "assets/textures/asteroid.jpg", 0, 0, 0.0},
+        {3, {{91, 40, 230, 5}, {0, 0, 0}}, "assets/textures/asteroid.jpg", 0, 0, 0.0}
+};
 
 static int size = 4;
 
@@ -58,14 +60,14 @@ void draw_space() {
         }
 }
 
-void apply_stars() {
+void apply_stars(GLuint _pId) {
         /* Application de la lumiere en fonction du soleil le plus proche */
         for (int i = size - 1; i >= 0; i--) {
                 if (s[i].id == 1) {
                         GLfloat _lumPos[4] = {s[i].body.data.x, s[i].body.data.y,
                                               s[i].body.data.z, 1.0};
-                        glUniform4fv(glGetUniformLocation(_pBasicId, "lumPos"), 1, _lumPos);
-                        return;
+                        glUniform4fv(glGetUniformLocation(_pId, "lumPos"), 1, _lumPos);
+                        break;
                 }
         }
 }

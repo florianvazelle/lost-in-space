@@ -13,7 +13,7 @@ void init_interact() {
 
 void draw_interact() {
         float trans[3] = {0.75, 0.75, 0.0};
-        float rotat[4] = {180, 1, 0, 0};
+        float rotat[4] = {180, 0, 0, 1};
         float scale[3] = {0.2, 0.25, 0.2};
         draw_template(_interactTexId, trans, rotat, scale);
 }

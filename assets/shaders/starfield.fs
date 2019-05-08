@@ -54,5 +54,5 @@ void main(void) {
     pos += stp;
   }
 
-  fragColor = vec4(ToGamma(col), 1.0);
+  fragColor = vec4(ToLinear(col), 1.0);
 }

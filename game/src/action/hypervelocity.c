@@ -35,12 +35,8 @@ static void draw_starfield() {
         glBindTexture(GL_TEXTURE_2D, _texNoise);
         gl4dgDraw(_plane);
 
-        glDisable(GL_TEXTURE_2D);
-        glBlendFunc(GL_ONE, GL_ZERO);
-        glDisable(GL_BLEND);
         glBindTexture(GL_TEXTURE_2D, 0);
         glUseProgram(0);
-
 }
 
 void animate_hypervelocity() {

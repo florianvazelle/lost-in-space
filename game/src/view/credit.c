@@ -13,10 +13,10 @@ void init_credit() {
         initText(&_textTexId,
                  "               Lost In Space\n\n"
                  "    On an original idea of Florian Vazelle\n\n"
-                 "       Developped by Florian Vazelle\n"
-                 "       Font designed by Tension Type\n"
-                 "      Someone is missing for music ?!\n"
-                 "           3D model by javier8\n"
+                 "        Developped by Florian Vazelle\n"
+                 "        Font designed by Tension Type\n"
+                 "       Someone is missing for music ?!\n"
+                 "            3D model by javier8\n"
                  "\n           Thanks for playing <3");
 }
 
