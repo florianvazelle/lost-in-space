@@ -2,16 +2,17 @@
 
 uniform vec4 lumPos;
 uniform float explosion;
-/* les sortie du vertex shader deviennent des entrées en mode array
-   car nous recevons un triangle en entrée */
+
 in vec3 vsoNormal[];
 in vec3 vsoModPos[];
 in vec2 vsoTexCoord[];
+in float vsoColor[];
 /* les sorties du geometry vers le fragment */
 out vec3 gsoNormal;
 out vec3 gsoModPos;
 out float gsoIdiffus;
 out vec2 gsoTexCoord;
+out float gsoColor;
 
 /* en entrée un triangle */
 layout(triangles) in;
@@ -40,12 +41,11 @@ void main(void) {
       }
 
       vec3 L = normalize(vsoModPos[i] - lumPos.xyz);
-      {
-        gsoNormal = vsoNormal[i];
-        gsoIdiffus = dot(vsoNormal[i], -L);
-      }
+      gsoNormal = vsoNormal[i];
+      gsoIdiffus = dot(vsoNormal[i], -L);
       gsoModPos = vsoModPos[i];
       gsoTexCoord = vsoTexCoord[i];
+      gsoColor = vsoColor[i];
       EmitVertex();
     }
     EndPrimitive();

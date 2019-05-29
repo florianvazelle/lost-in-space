@@ -318,7 +318,7 @@ static void draw() {
                                              0.0);
 
                         draw_skybox(_cam.x, _cam.y, _cam.z);
-                        draw_space(_light);
+                        draw_space();
 
                         draw_shoot();
 

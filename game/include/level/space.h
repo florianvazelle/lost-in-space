@@ -5,7 +5,7 @@
 
 void init_space(void);
 void update_space(int, int, int);
-void draw_space();
+void draw_space(void);
 void apply_stars(GLuint);
 
 int hit_player_satellite(entitie);

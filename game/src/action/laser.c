@@ -45,6 +45,7 @@ void draw_shoot() {
         glActiveTexture(GL_TEXTURE0);
         glUniform1i(glGetUniformLocation(_pBasicId, "myTexture"), 0);
 
+        glUniform1i(glGetUniformLocation(_pBasicId, "type"), 0);
         glUniform1i(glGetUniformLocation(_pBasicId, "light"), 0);
         glUniform1f(glGetUniformLocation(_pBasicId, "explosion"), 0);
 
